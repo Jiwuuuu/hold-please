@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/room.tscn" id="2_room"]
+[ext_resource type="Script" path="res://scripts/player_camera.gd" id="3_pcam"]
+
+[sub_resource type="World3D" id="World3D_shared"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+
+[node name="Container" type="SubViewportContainer" parent="."]
+unique_name_in_owner = true
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+
+[node name="WorldViewport" type="SubViewport" parent="Container"]
+unique_name_in_owner = true
+world_3d = SubResource("World3D_shared")
+handle_input_locally = false
+audio_listener_enable_3d = true
+
+[node name="Room" parent="Container/WorldViewport" instance=ExtResource("2_room")]
+
+[node name="PlayerContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="PlayerViewport" type="SubViewport" parent="PlayerContainer"]
+unique_name_in_owner = true
+world_3d = SubResource("World3D_shared")
+transparent_bg = true
+handle_input_locally = false
+
+[node name="PlayerCamera" type="Camera3D" parent="PlayerContainer/PlayerViewport"]
+cull_mask = 2
+projection = 1
+current = true
+size = 7.0
+script = ExtResource("3_pcam")
