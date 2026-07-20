@@ -11,6 +11,8 @@ signal interacted(target: Node3D)
 @export var accel: float = 20.0
 @export var fall_gravity: float = 20.0
 
+#the room turns this off while the camera sits at the desk
+var controls_enabled: bool = true
 var carried_cable: Cable = null
 
 @onready var _visual: Sprite3D = %Visual
@@ -20,7 +22,7 @@ var carried_cable: Cable = null
 
 #movement stays in physics so collisions behave the same every run
 func _physics_process(delta: float) -> void:
-	var input: Vector2 = Inputs.move_vector()
+	var input: Vector2 = Inputs.move_vector() if controls_enabled else Vector2.ZERO
 	var target: Vector3 = Vector3(input.x, 0.0, input.y) * move_speed
 	velocity.x = move_toward(velocity.x, target.x, accel * delta)
 	velocity.z = move_toward(velocity.z, target.z, accel * delta)
@@ -31,7 +33,7 @@ func _physics_process(delta: float) -> void:
 	if absf(velocity.x) > 0.05:
 		_visual.flip_h = velocity.x < 0.0
 
-	if Inputs.interact_pressed():
+	if controls_enabled and Inputs.interact_pressed():
 		_try_interact()
 
 

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/jack.tscn" id="3_jack"]
 [ext_resource type="PackedScene" path="res://scenes/socket.tscn" id="4_socket"]
+[ext_resource type="Script" uid="uid://cwm7yh3irg6y3" path="res://scripts/desk.gd" id="5_desk"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -54,10 +55,12 @@ albedo_color = Color(0.4, 0.28, 0.18, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_desk"]
 material = SubResource("StandardMaterial3D_desk")
-size = Vector3(2, 0.8, 2.0029297)
+size = Vector3(3.5701904, 0.8, 2.0029297)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_desk"]
 size = Vector3(2, 0.8, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_5d13o"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rug"]
 albedo_color = Color(0.32, 0.16, 0.14, 1)
@@ -150,15 +153,28 @@ mesh = SubResource("BoxMesh_skirt_side")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.55, 0.15, 0)
 mesh = SubResource("BoxMesh_skirt_side")
 
-[node name="Desk" type="StaticBody3D" parent="." unique_id=1067804738]
+[node name="Desk" type="StaticBody3D" parent="." unique_id=1067804738 groups=["interactable"]]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.4, 0.5)
+script = ExtResource("5_desk")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Desk" unique_id=938739701]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.50146484)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14300537, 0, -0.50146484)
 mesh = SubResource("BoxMesh_desk")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Desk" unique_id=1621037833]
 shape = SubResource("BoxShape3D_desk")
+
+[node name="ViewPoint" type="Camera3D" parent="Desk" unique_id=806576144]
+unique_name_in_owner = true
+transform = Transform3D(0.99947745, 0.017464776, -0.027199619, 0.027349351, -0.008392514, 0.9995907, 0.017229354, -0.99981225, -0.008865778, 0.09852958, 1.5259539, -0.48221272)
+cull_mask = 1048573
+projection = 1
+size = 1.9634405
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Desk" unique_id=1794534421]
+transform = Transform3D(1, 0, 0, 0, 0.06883401, 0, 0, 0, 1, -1.0294716, 0.48478648, -0.7998003)
+mesh = SubResource("CylinderMesh_5d13o")
 
 [node name="Rug" type="MeshInstance3D" parent="." unique_id=1883333414]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16021705, 0.02, 0.30692124)

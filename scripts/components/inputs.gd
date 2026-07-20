@@ -35,6 +35,12 @@ static func interact_pressed() -> bool:
 	return pressed
 
 
+#true on the frame escape goes down. ui_cancel is a godot built-in action,
+#so no raw-key fallback needed here.
+static func cancel_pressed() -> bool:
+	return Input.is_action_just_pressed("ui_cancel")
+
+
 #check the input map once and remember the answer
 static func _use_actions() -> bool:
 	if not _checked:

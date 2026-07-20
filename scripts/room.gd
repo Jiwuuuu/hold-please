@@ -10,11 +10,22 @@ const CABLE_SCENE: PackedScene = preload("res://scenes/cable.tscn")
 #stops, so the walls stay framed and the void outside never shows
 @export var camera_limit_min: Vector2 = Vector2(-1.8, -1.4)
 @export var camera_limit_max: Vector2 = Vector2(1.8, 1.4)
+#the desk close-up: how long the glide takes. the zoom itself lives on the
+#desk's ViewPoint camera (its size), so you preview the exact framing in-editor
+@export var desk_transition_time: float = 0.9
 
 var _cam_offset: Vector3
+var _home_basis: Basis
+var _home_size: float
+#desk mode covers the whole trip: fly in, sit, fly back out
+var _desk_mode: bool = false
+#true only once the fly-in has landed, so exit input works when the view is settled
+var _at_desk: bool = false
+var _cam_tween: Tween
 
 @onready var _player: Player = %Player
 @onready var _camera: Camera3D = %Camera
+@onready var _desk: Desk = %Desk
 
 
 func _ready() -> void:
@@ -22,6 +33,9 @@ func _ready() -> void:
 	#physics interpolation off for it (the 4.7 docs say to do this)
 	_camera.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	_cam_offset = _camera.global_position - _focus()
+	_home_basis = _camera.global_transform.basis
+	_home_size = _camera.size
+	_desk.opened.connect(_on_desk_opened)
 	for jack: Node in get_tree().get_nodes_in_group("jacks"):
 		(jack as Jack).plug_grabbed.connect(_on_plug_grabbed)
 	for socket: Node in get_tree().get_nodes_in_group("sockets"):
@@ -30,6 +44,12 @@ func _ready() -> void:
 
 #glide toward the player's drawn position, not the physics tick, or it judders
 func _process(delta: float) -> void:
+	if _desk_mode:
+		#the player script skips its own interact check while frozen,
+		#so reading the press here keeps it once per frame
+		if _at_desk and (Inputs.interact_pressed() or Inputs.cancel_pressed()):
+			_close_desk()
+		return
 	var target: Vector3 = _focus() + _cam_offset
 	var weight: float = 1.0 - exp(-camera_follow_speed * delta)
 	_camera.global_position = _camera.global_position.lerp(target, weight)
@@ -43,6 +63,36 @@ func _focus() -> Vector3:
 		0.0,
 		clampf(p.z, camera_limit_min.y, camera_limit_max.y)
 	)
+
+
+#fly the camera down to the desk close-up and freeze the operator
+func _on_desk_opened(desk: Desk) -> void:
+	_desk_mode = true
+	_player.controls_enabled = false
+	var vp: Camera3D = desk.view_point()
+	_start_cam_tween(vp.global_transform, vp.size)
+	_cam_tween.finished.connect(func() -> void: _at_desk = true)
+
+
+#pull back out to the room and hand control back once the glide lands
+func _close_desk() -> void:
+	_at_desk = false
+	_start_cam_tween(Transform3D(_home_basis, _focus() + _cam_offset), _home_size)
+	_cam_tween.finished.connect(func() -> void:
+		_desk_mode = false
+		_player.controls_enabled = true
+	)
+
+
+#one tween moves the camera pose and zoom together, killing any older one.
+#tweening global_transform blends the rotation properly (interpolate_with
+#under the hood), and the crisp pass camera mirrors it every frame for free.
+func _start_cam_tween(target: Transform3D, target_size: float) -> void:
+	if _cam_tween != null:
+		_cam_tween.kill()
+	_cam_tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT).set_parallel()
+	_cam_tween.tween_property(_camera, "global_transform", target, desk_transition_time)
+	_cam_tween.tween_property(_camera, "size", target_size, desk_transition_time)
 
 
 #a jack gave out its plug: spawn a cable from that jack to the player's hands
