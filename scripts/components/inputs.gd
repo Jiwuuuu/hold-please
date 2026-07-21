@@ -7,6 +7,7 @@ extends RefCounted
 static var _checked: bool = false
 static var _has_actions: bool = false
 static var _interact_was_down: bool = false
+static var _debug_was_down: bool = false
 
 
 static func move_vector() -> Vector2:
@@ -34,6 +35,14 @@ static func interact_pressed() -> bool:
 	_interact_was_down = down
 	return pressed
 
+#for testing purposes
+static func debug_pressed() -> bool:
+	if _use_actions():
+		return Input.is_action_just_pressed("debug")
+	var down: bool = Input.is_physical_key_pressed(KEY_Q)
+	var pressed: bool = down and not _debug_was_down
+	_debug_was_down = down
+	return pressed
 
 #true on the frame escape goes down. ui_cancel is a godot built-in action,
 #so no raw-key fallback needed here.

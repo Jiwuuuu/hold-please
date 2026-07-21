@@ -37,9 +37,15 @@ func _ready() -> void:
 	_home_size = _camera.size
 	_desk.opened.connect(_on_desk_opened)
 	for jack: Node in get_tree().get_nodes_in_group("jacks"):
-		(jack as Jack).plug_grabbed.connect(_on_plug_grabbed)
+		if jack is Jack:
+			(jack as Jack).plug_grabbed.connect(_on_plug_grabbed)
+		elif jack is Anchor:
+			(jack as Anchor).plug_grabbed.connect(_on_plug_grabbed)
 	for socket: Node in get_tree().get_nodes_in_group("sockets"):
-		(socket as Socket).plug_seated.connect(_on_plug_seated)
+		if socket is Socket:
+			(socket as Socket).plug_seated.connect(_on_plug_seated)
+		elif socket is Anchor:
+			(socket as Anchor).plug_seated.connect(_on_plug_seated)
 
 
 #glide toward the player's drawn position, not the physics tick, or it judders
@@ -95,18 +101,31 @@ func _start_cam_tween(target: Transform3D, target_size: float) -> void:
 	_cam_tween.tween_property(_camera, "size", target_size, desk_transition_time)
 
 
+#I changed these ones to "Node"
+#this way they also work with the new "Anchor" class
+
 #a jack gave out its plug: spawn a cable from that jack to the player's hands
-func _on_plug_grabbed(jack: Jack) -> void:
+func _on_plug_grabbed(jack: Node) -> void:
 	var cable: Cable = CABLE_SCENE.instantiate()
 	cable.setup(jack.cable_anchor(), _player.carry_point())
 	add_child(cable)
 	_player.carried_cable = cable
+	_player.carried_cable.message = jack.message
 
 
 #the plug went into a socket: drop it there and blink the socket
-func _on_plug_seated(socket: Socket) -> void:
+func _on_plug_seated(socket: Node) -> void:
 	if _player.carried_cable == null:
 		return
+	socket.message += _player.carried_cable.message
 	_player.carried_cable.seat_to(socket.snap_point())
 	_player.carried_cable = null
 	socket.flash()
+	get_solution()
+
+#this section is used to gather the solution from the sockets/endpoints
+var solution : Array[String] = []
+
+func get_solution():
+	for endpoint: Node in get_tree().get_nodes_in_group("endpoints"):
+		solution.append(endpoint.message)

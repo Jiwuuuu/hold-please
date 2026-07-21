@@ -4,6 +4,9 @@ extends StaticBody3D
 #interact grabs the plug — test_room spawns the cable and hands it to the player.
 #the lamp material lives on the Lamp node (local to scene, so every jack has its own copy).
 
+#the "message" variable is used for the puzzle logic
+@export var message : String = ""
+
 signal plug_grabbed(jack: Jack)
 
 const LAMP_LIT: Color = Color(1.0, 0.72, 0.2)

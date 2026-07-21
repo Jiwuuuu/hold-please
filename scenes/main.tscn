@@ -1,15 +1,23 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://dosx1rjxg4cn"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://scenes/room.tscn" id="2_room"]
-[ext_resource type="Script" path="res://scripts/player_camera.gd" id="3_pcam"]
+[ext_resource type="Script" uid="uid://14f4uf45t4nq" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://gr70c2hwomm1" path="res://scenes/room.tscn" id="2_room"]
+[ext_resource type="Script" uid="uid://l07cxkv6bxk0" path="res://scripts/player_camera.gd" id="3_pcam"]
+[ext_resource type="Script" uid="uid://b4oqi8npynm0a" path="res://scripts/puzzle_manager.gd" id="4_jyhfs"]
+
+[sub_resource type="Environment" id="Environment_room"]
+background_mode = 1
+background_color = Color(0.09, 0.08, 0.11, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.72, 0.7, 0.78, 1)
 
 [sub_resource type="World3D" id="World3D_shared"]
+environment = SubResource("Environment_room")
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node" unique_id=1224004559]
 script = ExtResource("1_main")
 
-[node name="Container" type="SubViewportContainer" parent="."]
+[node name="Container" type="SubViewportContainer" parent="." unique_id=1296633216]
 unique_name_in_owner = true
 texture_filter = 1
 anchors_preset = 15
@@ -20,15 +28,17 @@ grow_vertical = 2
 stretch = true
 stretch_shrink = 3
 
-[node name="WorldViewport" type="SubViewport" parent="Container"]
+[node name="WorldViewport" type="SubViewport" parent="Container" unique_id=1805138923]
 unique_name_in_owner = true
 world_3d = SubResource("World3D_shared")
 handle_input_locally = false
 audio_listener_enable_3d = true
+size = Vector2i(426, 240)
+render_target_update_mode = 4
 
-[node name="Room" parent="Container/WorldViewport" instance=ExtResource("2_room")]
+[node name="Room" parent="Container/WorldViewport" unique_id=1681552665 instance=ExtResource("2_room")]
 
-[node name="PlayerContainer" type="SubViewportContainer" parent="."]
+[node name="PlayerContainer" type="SubViewportContainer" parent="." unique_id=1658899019]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -37,15 +47,21 @@ grow_vertical = 2
 mouse_filter = 2
 stretch = true
 
-[node name="PlayerViewport" type="SubViewport" parent="PlayerContainer"]
+[node name="PlayerViewport" type="SubViewport" parent="PlayerContainer" unique_id=259876794]
 unique_name_in_owner = true
 world_3d = SubResource("World3D_shared")
 transparent_bg = true
 handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
 
-[node name="PlayerCamera" type="Camera3D" parent="PlayerContainer/PlayerViewport"]
+[node name="PlayerCamera" type="Camera3D" parent="PlayerContainer/PlayerViewport" unique_id=1369232150]
 cull_mask = 2
 projection = 1
 current = true
 size = 7.0
 script = ExtResource("3_pcam")
+
+[node name="PuzzleManager" type="Node" parent="." unique_id=2046163139 node_paths=PackedStringArray("room")]
+script = ExtResource("4_jyhfs")
+room = NodePath("../Container/WorldViewport/Room")

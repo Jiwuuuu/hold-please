@@ -10,6 +10,10 @@ extends Node3D
 #if the sag simulation ever misbehaves, turn use_verlet off in the inspector
 #for a simple curve fallback that uses the same ribbon drawing.
 
+#the "message" variable is used for the puzzle logic
+#for the cable scene, it should always be ""
+@export var message : String = ""
+
 @export var point_count: int = 14
 @export var rest_length: float = 4.0
 @export var gravity: float = 18.0

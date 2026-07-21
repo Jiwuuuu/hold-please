@@ -3,6 +3,9 @@ extends StaticBody3D
 #a destination socket. interact while carrying a cable to seat the plug.
 #the body material lives on the Body node (local to scene) so flash() can tint it per socket.
 
+#the "message" variable is used for the puzzle logic
+@export var message : String = ""
+
 signal plug_seated(socket: Socket)
 
 const FLASH_COLOR: Color = Color(0.55, 1.0, 0.55)

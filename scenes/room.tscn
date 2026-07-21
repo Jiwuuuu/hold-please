@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/jack.tscn" id="3_jack"]
 [ext_resource type="PackedScene" path="res://scenes/socket.tscn" id="4_socket"]
 [ext_resource type="Script" uid="uid://cwm7yh3irg6y3" path="res://scripts/desk.gd" id="5_desk"]
+[ext_resource type="PackedScene" uid="uid://itm5rivrio3r" path="res://scenes/anchor.tscn" id="6_jn645"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -155,7 +156,7 @@ mesh = SubResource("BoxMesh_skirt_side")
 
 [node name="Desk" type="StaticBody3D" parent="." unique_id=1067804738 groups=["interactable"]]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.4, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7090669, 0.4, 4.0430956)
 script = ExtResource("5_desk")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Desk" unique_id=938739701]
@@ -184,41 +185,51 @@ mesh = SubResource("BoxMesh_rug")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
-[node name="JackA" parent="." unique_id=472071866 instance=ExtResource("3_jack")]
+[node name="Jack1" parent="." unique_id=472071866 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, -4)
+message = "01"
 
-[node name="JackB" parent="." unique_id=1498691325 instance=ExtResource("3_jack")]
+[node name="Jack2" parent="." unique_id=1498691325 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, -2)
+message = "02"
 
-[node name="JackC" parent="." unique_id=1562588668 instance=ExtResource("3_jack")]
+[node name="Jack3" parent="." unique_id=1562588668 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, 0)
+message = "03"
 
-[node name="JackD" parent="." unique_id=1681611688 instance=ExtResource("3_jack")]
+[node name="Jack4" parent="." unique_id=1681611688 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, 2)
+message = "04"
 
-[node name="SocketA" parent="." unique_id=562388639 instance=ExtResource("4_socket")]
+[node name="SocketA" parent="." unique_id=562388639 groups=["endpoints"] instance=ExtResource("4_socket")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -4)
+message = "AA"
 
-[node name="SocketB" parent="." unique_id=544747551 instance=ExtResource("4_socket")]
+[node name="SocketB" parent="." unique_id=544747551 groups=["endpoints"] instance=ExtResource("4_socket")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -2.5)
+message = "BB"
 
-[node name="SocketC" parent="." unique_id=809291900 instance=ExtResource("4_socket")]
+[node name="SocketC" parent="." unique_id=809291900 groups=["endpoints"] instance=ExtResource("4_socket")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -1)
+message = "CC"
 
-[node name="SocketD" parent="." unique_id=570589382 instance=ExtResource("4_socket")]
+[node name="SocketD" parent="." unique_id=570589382 groups=["endpoints"] instance=ExtResource("4_socket")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, 0.5)
+message = "DD"
 
-[node name="SocketE" parent="." unique_id=899604467 instance=ExtResource("4_socket")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, 2)
+[node name="Anchor" parent="." unique_id=1082834748 instance=ExtResource("6_jn645")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.1806464)
 
 [node name="Label3D" type="Label3D" parent="." unique_id=2056913020]
 transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -1.9687657, 0.77352446, -1.2994026)
+visible = false
 layers = 2
 pixel_size = 0.01
 text = "this is a desk :>"
 
 [node name="Label3D3" type="Label3D" parent="." unique_id=245919275]
 transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -1.9395695, 0.77352446, 2.0158587)
+visible = false
 layers = 2
 pixel_size = 0.01
 text = "from what i understand by nerbon docs:
@@ -227,6 +238,7 @@ living via the desk i guess"
 
 [node name="Label3D2" type="Label3D" parent="." unique_id=1681969602]
 transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -4.5436745, 0.07024616, -4.7364864)
+visible = false
 layers = 2
 pixel_size = 0.01
 text = "not sure about the switchboards"
