@@ -1,0 +1,535 @@
+[gd_scene format=3 uid="uid://dosx1rjxg4cn"]
+
+[ext_resource type="Script" uid="uid://14f4uf45t4nq" path="res://scripts/game.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://gr70c2hwomm1" path="res://scenes/room.tscn" id="2_room"]
+[ext_resource type="Script" uid="uid://l07cxkv6bxk0" path="res://scripts/player_camera.gd" id="3_pcam"]
+[ext_resource type="Script" uid="uid://b4oqi8npynm0a" path="res://scripts/puzzle_manager.gd" id="4_jyhfs"]
+[ext_resource type="Script" uid="uid://ftnbloup1kga" path="res://scripts/dossier_manager.gd" id="5_tbgi4"]
+[ext_resource type="Script" uid="uid://dn0nv5wpbi5o2" path="res://scripts/task_manager.gd" id="6_tefeu"]
+[ext_resource type="Script" path="res://scripts/puzzle_def.gd" id="7_pdef"]
+[ext_resource type="Script" path="res://scripts/transitions/transition_manager.gd" id="8_trman"]
+[ext_resource type="Script" path="res://scripts/garble_text.gd" id="9_garble"]
+[ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="10_pause"]
+[ext_resource type="Script" path="res://scripts/screen_fx.gd" id="11_fx"]
+[ext_resource type="Shader" path="res://assets/shaders/crt.gdshader" id="12_crt"]
+[ext_resource type="Shader" path="res://assets/shaders/glitch.gdshader" id="13_glitch"]
+
+[sub_resource type="Environment" id="Environment_room"]
+background_mode = 1
+background_color = Color(0.09, 0.08, 0.11, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.72, 0.7, 0.78, 1)
+
+[sub_resource type="World3D" id="World3D_shared"]
+environment = SubResource("Environment_room")
+
+[sub_resource type="Theme" id="Theme_ajtct"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loq3h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dark"]
+bg_color = Color(0.07123137, 0.0712314, 0.07123133, 1)
+
+[sub_resource type="RichTextEffect" id="Resource_garble"]
+script = ExtResource("9_garble")
+flicker_threshold = 0.965
+shake_pixels = 1.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("12_crt")
+shader_parameter/scanlines_count = 2.1
+shader_parameter/scanlines_intensity = 0.12
+shader_parameter/color_offset = 1.5
+shader_parameter/blur = 0.2
+shader_parameter/warp_amount = Vector2(0.045, 0.06)
+shader_parameter/vignette_strength = 0.35
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]
+shader = ExtResource("13_glitch")
+shader_parameter/intensity = 0.0
+
+[sub_resource type="Resource" id="Resource_puzzle1"]
+script = ExtResource("7_pdef")
+title = "Night 1"
+task_text = "[b]Night 1[/b]
+Listening tonight:   1 Irene    2 Charles    3 Annabeth    4 Dafne
+
+Caller 1: [garble]“I want to reach my late mother. I miss her most around Christmas.”[/garble]
+
+[i]Grab the ringing jack's plug, carry it to the right listener's socket, then press the big button.[/i]"
+callers = 1
+listening = Array[String](["Irene", "Charles", "Annabeth", "Dafne"])
+caller_lines = Array[String](["seeking a late mother, missed most at Christmas"])
+solution = Array[String](["DD01", "XXXX", "XXXX", "XXXX"])
+vignette_rows = Array[String](["…Mom?", "Evelyn? My little girl! How are the children? And your father?", "The kids are well, they often ask about you. Dad… we don’t really talk.", "I see, I don’t blame you. Still, let’s focus on the children today, we don’t have much time."])
+hints = Array[String](["She misses her mother most at Christmas — which listener lived for family gatherings and snowmen?"])
+
+[sub_resource type="Resource" id="Resource_puzzle2"]
+script = ExtResource("7_pdef")
+title = "Night 2"
+task_text = "[b]Night 2[/b]
+Listening tonight:   1 Irene    2 Charles    3 Annabeth    4 Dafne
+
+Caller 1: [garble]“My sister has to hear this: we always knew the neighbours were hiding something!”[/garble]
+Caller 2: [garble]“My aunt and I never mended things. Maybe now she will finally talk to me.”[/garble]
+
+[i]Two callers tonight. Leave the other sockets empty. Wrong plug? Interact a connected socket to pull the line back out.[/i]"
+callers = 2
+listening = Array[String](["Irene", "Charles", "Annabeth", "Dafne"])
+caller_lines = Array[String](["a sister — the neighbours were hiding something!", "an estranged aunt, ties to mend"])
+solution = Array[String](["CC01", "AA02", "XXXX", "XXXX"])
+vignette_rows = Array[String](["You won’t believe it! The young couple next door…", "Won’t believe? I knew it! I always knew it!", "Alright, alright, don’t gloat too much.", "Oh, I’ll gloat plenty. I always knew, and you naysayers called me a hag!"])
+hints = Array[String](["Two sisters who always knew about the neighbours — which listener loved gossip?", "Caller 2 seeks an estranged aunt — rule out the gentleman and the gossip, then think of who’d keep a call short."])
+
+[sub_resource type="Resource" id="Resource_puzzle3"]
+script = ExtResource("7_pdef")
+title = "Night 3"
+task_text = "[b]Night 3[/b]
+Listening tonight:   1 Bryan    2 Dafne    3 Gordon    4 Kevin
+
+Caller 1: [garble]“My friend died so young, so suddenly. I need their voice again.”[/garble]
+Caller 2: [garble]“There will be a rock concert in our friend's honour. Not their favourite — but they would love it.”[/garble]
+Caller 3: [garble]“The whole team wants to say goodbye to our quarterback.”[/garble]
+Caller 4: [garble]“I inherited the most wonderful old vinyls. I want to thank their careful owner.”[/garble]
+
+[i]Full board. Lines must not tangle on the floor — hook a line through an anchor post to lift it over another.[/i]"
+callers = 4
+listening = Array[String](["Bryan", "Dafne", "Gordon", "Kevin"])
+caller_lines = Array[String](["a friend lost young and suddenly", "a music lover — rock concert in their honour", "the team's quarterback", "a careful collector of old vinyls"])
+solution = Array[String](["CC01", "DD02", "AA03", "BB04"])
+vignette_rows = Array[String](["A rock concert, uh?", "Well, you were quite the rock-star, once upon a time…", "Surely, you jest, I can hardly remember having an audience of more than ten!", "Still, you taught half those kids. Or their parents.", "Was I so old?", "And wise!"])
+hints = Array[String](["A sudden, tragic loss, still raw — which listener never saw the car coming?", "A rock concert in their honour — rock isn’t quite their thing, but who loved music of every kind?", "The team’s quarterback — which listener loved football?", "A careful collector of old vinyls — which listener adored Verdi?"])
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+
+[node name="Container" type="SubViewportContainer" parent="."]
+unique_name_in_owner = true
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+stretch = true
+stretch_shrink = 3
+
+[node name="WorldViewport" type="SubViewport" parent="Container"]
+unique_name_in_owner = true
+world_3d = SubResource("World3D_shared")
+handle_input_locally = false
+audio_listener_enable_3d = true
+size = Vector2i(426, 240)
+render_target_update_mode = 4
+
+[node name="Room" parent="Container/WorldViewport" instance=ExtResource("2_room")]
+
+[node name="PlayerContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="PlayerViewport" type="SubViewport" parent="PlayerContainer"]
+unique_name_in_owner = true
+world_3d = SubResource("World3D_shared")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="PlayerCamera" type="Camera3D" parent="PlayerContainer/PlayerViewport"]
+cull_mask = 2
+projection = 1
+current = true
+size = 7.0
+script = ExtResource("3_pcam")
+
+[node name="HudLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 10.0
+offset_right = 720.0
+offset_bottom = 42.0
+theme_override_font_sizes/font_size = 22
+text = "Night 1   —   strikes left: 3"
+
+[node name="CarryLabel" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -420.0
+offset_top = 52.0
+offset_right = 420.0
+offset_bottom = 86.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "Caller 1 — “seeking a late mother”"
+horizontal_alignment = 1
+
+[node name="DossierPanel" type="Panel" parent="."]
+visible = false
+offset_right = 1271.0
+offset_bottom = 717.0
+theme = SubResource("Theme_ajtct")
+theme_override_styles/panel = SubResource("StyleBoxFlat_loq3h")
+
+[node name="Page0" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Annabeth
+•	Age of Death: A lady never tells.
+•	Cause of Death: Heart failure.
+•	Likes: Fine wine, gossip and jazz music.
+•	Dislikes: Pets and cold weather. Also, I never understood people who drink tea.
+"
+
+[node name="Page1" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Bryan
+•	Age of Death: 52
+•	Cause of Death: Severe alcohol poisoning.
+•	Likes: Booze, chess and football. And my family, of course!
+•	Dislikes: Rock and roll and those blasted politics.
+
+"
+
+[node name="Page2" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Charles
+•	Age of Death: 81
+•	Cause of Death: Severe concussion
+•	Likes: Checkers, charity work, and my pet parrot.
+•	Dislikes: Classical music, opera, ballet and all that. And oranges! Nasty oranges!
+"
+
+[node name="Page3" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Dafne
+•	Age of Death: 47
+•	Cause of Death: Freak accident, a tragedy
+•	Likes: Verdi, snowmen, lemonade and family gatherings.
+•	Dislikes: Being dead, actually. Also, not a big reader nor a fan of sports.
+"
+
+[node name="Page4" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Erica
+•	Age of Death: 90
+•	Cause of Death: Old age, dear
+•	Likes: Crosswords, antiques, fashion, romance novels, my former work as an engineer.
+•	Dislikes: Retirement was not kind, and I hate those feathered fiends.
+"
+
+[node name="Page5" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Franklyn
+•	Age of Death: 40
+•	Cause of Death: Electrocution
+•	Likes: Videogames and the lottery helped me relieve stress. Also, I was a gym rat. Still am.
+•	Dislikes: Cables (obviously), sweets, sugary drinks and jazz music. Don’t ask.
+"
+
+[node name="Page6" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Gordon
+•	Age of Death: 27
+•	Cause of Death: Didn’t see the car
+•	Likes: Videogames, rock and roll, cooking and baking.
+•	Dislikes: Cars, ghosts (but not the nice ones), and maths.
+"
+
+[node name="Page7" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Henri
+•	Age of Death: 65
+•	Cause of Death: Lycanthropy
+•	Likes: Deep conversations, fine art and the full moon.
+•	Dislikes: Nightmares, talking about my father, loud noises, and silver paraphernalia.
+"
+
+[node name="Page8" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Irene
+•	Age of Death: 75
+•	Cause of Death: Cancer
+•	Likes: Chai, classical music, my cats: I hope they’re looked after.
+•	Dislikes: Long, pointless conversations, screaming children, loud noises.
+"
+
+[node name="Page9" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 74.0
+offset_right = 1131.0
+offset_bottom = 608.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Kevin
+•	Age of Death: 78
+•	Cause of Death: Old age
+•	Likes: Jazz, blues, a lot of music in general. And spending time with grandkids.
+•	Dislikes: I got to say, my wife, man. Long may she live.
+"
+
+[node name="ByeButton" type="Button" parent="DossierPanel"]
+layout_mode = 0
+offset_left = 65.0
+offset_top = 617.0
+offset_right = 284.0
+offset_bottom = 682.0
+theme_override_font_sizes/font_size = 32
+text = "Go Back"
+
+[node name="ForwardButton" type="Button" parent="DossierPanel"]
+layout_mode = 0
+offset_left = 1140.0
+offset_top = 638.0
+offset_right = 1201.0
+offset_bottom = 701.0
+theme_override_font_sizes/font_size = 32
+text = ">>"
+
+[node name="BackButton" type="Button" parent="DossierPanel"]
+layout_mode = 0
+offset_left = 1065.0
+offset_top = 638.0
+offset_right = 1126.0
+offset_bottom = 701.0
+theme_override_font_sizes/font_size = 32
+text = "<<"
+
+[node name="TaskPanel" type="Panel" parent="."]
+visible = false
+offset_right = 1271.0
+offset_bottom = 717.0
+theme = SubResource("Theme_ajtct")
+theme_override_styles/panel = SubResource("StyleBoxFlat_loq3h")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TaskPanel"]
+layout_mode = 0
+offset_left = 151.0
+offset_top = 46.0
+offset_right = 1124.0
+offset_bottom = 563.0
+theme_override_font_sizes/normal_font_size = 28
+bbcode_enabled = true
+text = "the task text is set per night by the puzzle manager"
+custom_effects = [SubResource("Resource_garble")]
+
+[node name="ByeButton" type="Button" parent="TaskPanel"]
+layout_mode = 0
+offset_left = 65.0
+offset_top = 617.0
+offset_right = 284.0
+offset_bottom = 682.0
+theme_override_font_sizes/font_size = 32
+text = "Go Back"
+
+[node name="TransitionPanel" type="Panel" parent="."]
+visible = false
+offset_right = 1282.0
+offset_bottom = 740.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dark")
+
+[node name="DialogueLabel" type="RichTextLabel" parent="TransitionPanel"]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 69.0
+offset_right = 1159.0
+offset_bottom = 638.0
+theme_override_font_sizes/normal_font_size = 36
+
+[node name="Button" type="Button" parent="TransitionPanel"]
+visible = false
+layout_mode = 0
+offset_left = 955.0
+offset_top = 622.0
+offset_right = 1193.0
+offset_bottom = 675.0
+theme_override_font_sizes/font_size = 32
+text = "Continue"
+
+[node name="FeedbackPanel" type="Panel" parent="."]
+visible = false
+offset_left = 240.0
+offset_top = 120.0
+offset_right = 1040.0
+offset_bottom = 600.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dark")
+
+[node name="FeedbackLabel" type="RichTextLabel" parent="FeedbackPanel"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 36.0
+offset_right = 760.0
+offset_bottom = 380.0
+theme_override_font_sizes/normal_font_size = 26
+
+[node name="FeedbackButton" type="Button" parent="FeedbackPanel"]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 400.0
+offset_right = 760.0
+offset_bottom = 452.0
+theme_override_font_sizes/font_size = 28
+text = "Back to the Board"
+
+[node name="EndingPanel" type="Panel" parent="."]
+visible = false
+offset_right = 1282.0
+offset_bottom = 740.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dark")
+
+[node name="EndingLabel" type="RichTextLabel" parent="EndingPanel"]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 69.0
+offset_right = 1159.0
+offset_bottom = 560.0
+theme_override_font_sizes/normal_font_size = 36
+text = "The last lamp goes dark.
+
+Every soul found its line tonight.
+Rest easy, operator — the dead certainly will."
+
+[node name="EndingButton" type="Button" parent="EndingPanel"]
+layout_mode = 0
+offset_left = 955.0
+offset_top = 622.0
+offset_right = 1193.0
+offset_bottom = 675.0
+theme_override_font_sizes/font_size = 32
+text = "Clock Out"
+
+[node name="PuzzleManager" type="Node" parent="." node_paths=PackedStringArray("room", "tr_manager", "task_label", "hud_label", "carry_label", "feedback_panel", "feedback_label", "feedback_button", "ending_panel", "screen_fx")]
+script = ExtResource("4_jyhfs")
+room = NodePath("../Container/WorldViewport/Room")
+tr_manager = NodePath("../TransitionManager")
+puzzles = Array[ExtResource("7_pdef")]([SubResource("Resource_puzzle1"), SubResource("Resource_puzzle2"), SubResource("Resource_puzzle3")])
+prologue_rows = Array[String](["Night falls. The exchange hums awake.", "You connect the living to the dead they miss.", "Read the requests, check the dossier, patch the right lines."])
+task_label = NodePath("../TaskPanel/RichTextLabel")
+hud_label = NodePath("../HudLabel")
+carry_label = NodePath("../CarryLabel")
+feedback_panel = NodePath("../FeedbackPanel")
+feedback_label = NodePath("../FeedbackPanel/FeedbackLabel")
+feedback_button = NodePath("../FeedbackPanel/FeedbackButton")
+ending_panel = NodePath("../EndingPanel")
+screen_fx = NodePath("../ScreenFX")
+
+[node name="TransitionManager" type="Node" parent="." node_paths=PackedStringArray("tr_panel", "tr_label", "tr_button")]
+script = ExtResource("8_trman")
+tr_panel = NodePath("../TransitionPanel")
+tr_label = NodePath("../TransitionPanel/DialogueLabel")
+tr_button = NodePath("../TransitionPanel/Button")
+
+[node name="DossierManager" type="Node" parent="." node_paths=PackedStringArray("dossier_panel")]
+script = ExtResource("5_tbgi4")
+dossier_panel = NodePath("../DossierPanel")
+
+[node name="TaskManager" type="Node" parent="." node_paths=PackedStringArray("panel")]
+script = ExtResource("6_tefeu")
+panel = NodePath("../TaskPanel")
+
+[node name="PauseMenu" parent="." node_paths=PackedStringArray("room") instance=ExtResource("10_pause")]
+room = NodePath("../Container/WorldViewport/Room")
+
+[node name="ScreenFX" type="Control" parent="." node_paths=PackedStringArray("glitch_rect")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("11_fx")
+glitch_rect = NodePath("GlitchRect")
+
+[node name="CRTRect" type="ColorRect" parent="ScreenFX"]
+material = SubResource("ShaderMaterial_crt")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="GlitchRect" type="ColorRect" parent="ScreenFX"]
+material = SubResource("ShaderMaterial_glitch")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[connection signal="big_button_signal" from="Container/WorldViewport/Room" to="PuzzleManager" method="_on_room_big_button_signal"]
+[connection signal="dossier_signal" from="Container/WorldViewport/Room" to="DossierManager" method="_on_room_dossier_signal"]
+[connection signal="task_signal" from="Container/WorldViewport/Room" to="TaskManager" method="_on_room_task_signal"]
+[connection signal="pressed" from="DossierPanel/ByeButton" to="DossierManager" method="_on_bye_button_pressed"]
+[connection signal="pressed" from="DossierPanel/ForwardButton" to="DossierManager" method="_on_forward_button_pressed"]
+[connection signal="pressed" from="DossierPanel/BackButton" to="DossierManager" method="_on_back_button_pressed"]
+[connection signal="pressed" from="TaskPanel/ByeButton" to="TaskManager" method="_on_bye_button_pressed"]
+[connection signal="pressed" from="TransitionPanel/Button" to="TransitionManager" method="_on_button_pressed"]
+[connection signal="pressed" from="FeedbackPanel/FeedbackButton" to="PuzzleManager" method="_on_feedback_button_pressed"]
+[connection signal="pressed" from="EndingPanel/EndingButton" to="PuzzleManager" method="_on_ending_button_pressed"]
+[connection signal="advance_pressed" from="TransitionManager" to="PuzzleManager" method="_on_transition_advanced"]

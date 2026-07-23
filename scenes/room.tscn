@@ -2,9 +2,18 @@
 
 [ext_resource type="Script" uid="uid://iffdiaacbwyi" path="res://scripts/room.gd" id="1_room"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://scenes/jack.tscn" id="3_jack"]
-[ext_resource type="PackedScene" path="res://scenes/socket.tscn" id="4_socket"]
+[ext_resource type="PackedScene" uid="uid://brqqjesnt52eb" path="res://scenes/props/jack.tscn" id="3_jack"]
+[ext_resource type="PackedScene" uid="uid://dwvx8h53idhdg" path="res://scenes/props/socket.tscn" id="4_socket"]
 [ext_resource type="Script" uid="uid://cwm7yh3irg6y3" path="res://scripts/desk.gd" id="5_desk"]
+[ext_resource type="PackedScene" uid="uid://itm5rivrio3r" path="res://scenes/props/anchor.tscn" id="6_anchor"]
+[ext_resource type="Texture2D" uid="uid://c5y6rps7q07sf" path="res://assets/sprites/socket1L1.png" id="7_sk1"]
+[ext_resource type="Texture2D" uid="uid://bpy3rip64gll1" path="res://assets/sprites/socket1L2.png" id="8_sk2"]
+[ext_resource type="Texture2D" uid="uid://6b1qs3c23qf2" path="res://assets/sprites/socket1L3.png" id="9_sk3"]
+[ext_resource type="Texture2D" uid="uid://csg877moex61t" path="res://assets/sprites/socket1L4.png" id="10_sk4"]
+[ext_resource type="Texture2D" uid="uid://cxija3f162j0u" path="res://assets/sprites/socket1L5.png" id="11_pt1"]
+[ext_resource type="Texture2D" uid="uid://pga508y4r6ut" path="res://assets/sprites/socket1L6.png" id="12_pt2"]
+[ext_resource type="Texture2D" uid="uid://ielqogy5g3g3" path="res://assets/sprites/socket1L7.png" id="13_pt3"]
+[ext_resource type="Texture2D" uid="uid://djww3k0rksjxs" path="res://assets/sprites/socket1L8.png" id="14_pt4"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -34,7 +43,7 @@ size = Vector3(16, 2.6, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wall_side"]
 material = SubResource("StandardMaterial3D_wall")
-size = Vector3(0.4, 2.6, 12)
+size = Vector3(0.4, 2.6, 12.053406)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
 size = Vector3(0.4, 2.6, 12)
@@ -71,6 +80,23 @@ radius = 0.52490234
 [sub_resource type="BoxShape3D" id="BoxShape3D_ajtct"]
 size = Vector3(1.2755127, 0.83843994, 0.7690735)
 
+[sub_resource type="BoxMesh" id="BoxMesh_lampbase"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.16, 0.03, 0.16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lampstem"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.035, 0.3, 0.035)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shade"]
+albedo_color = Color(0.16, 0.24, 0.19, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_desklampshade"]
+material = SubResource("StandardMaterial3D_shade")
+top_radius = 0.05
+bottom_radius = 0.15
+height = 0.12
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rug"]
 albedo_color = Color(0.32, 0.16, 0.14, 1)
 
@@ -78,259 +104,551 @@ albedo_color = Color(0.32, 0.16, 0.14, 1)
 material = SubResource("StandardMaterial3D_rug")
 size = Vector3(12.666845, 0.04, 9.113256)
 
-[node name="Room" type="Node3D" unique_id=947046454 node_paths=PackedStringArray("dossier_body", "task_body", "big_button")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(1, 0.95, 0.6, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+radius = 0.09
+height = 0.18
+
+[sub_resource type="BoxMesh" id="BoxMesh_winframe"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(1.7, 1.5, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glass"]
+albedo_color = Color(0.08, 0.12, 0.25, 1)
+emission_enabled = true
+emission = Color(0.25, 0.4, 0.8, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_winglass"]
+material = SubResource("StandardMaterial3D_glass")
+size = Vector3(1.46, 1.26, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mullionv"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.08, 1.26, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mullionh"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(1.46, 0.08, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_clockrim"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.6, 0.6, 0.07)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cream"]
+albedo_color = Color(0.85, 0.8, 0.68, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_clockface"]
+material = SubResource("StandardMaterial3D_cream")
+size = Vector3(0.5, 0.5, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_boardframe"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(1.04, 0.84, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cork"]
+albedo_color = Color(0.55, 0.42, 0.28, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_boardcork"]
+material = SubResource("StandardMaterial3D_cork")
+size = Vector3(0.94, 0.74, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_note"]
+material = SubResource("StandardMaterial3D_cream")
+size = Vector3(0.14, 0.18, 0.03)
+
+[sub_resource type="BoxMesh" id="BoxMesh_poster"]
+material = SubResource("StandardMaterial3D_cream")
+size = Vector3(0.55, 0.75, 0.04)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabinet"]
+albedo_color = Color(0.33, 0.36, 0.33, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cabinet"]
+material = SubResource("StandardMaterial3D_cabinet")
+size = Vector3(0.7, 1.1, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cabinet"]
+size = Vector3(0.7, 1.1, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_drawer"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.6, 0.28, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_chairseat"]
+material = SubResource("StandardMaterial3D_desk")
+size = Vector3(0.55, 0.09, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_chairback"]
+material = SubResource("StandardMaterial3D_desk")
+size = Vector3(0.55, 0.62, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_chairlegs"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.45, 0.46, 0.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chair"]
+size = Vector3(0.6, 1, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tray"]
+material = SubResource("StandardMaterial3D_skirt")
+size = Vector3(0.3, 0.07, 9)
+
+[node name="Room" type="Node3D" unique_id=212477981 node_paths=PackedStringArray("socket_name_labels", "spark", "dossier_body", "task_body", "big_button")]
 script = ExtResource("1_room")
+socket_name_labels = [NodePath("SocketName1"), NodePath("SocketName2"), NodePath("SocketName3"), NodePath("SocketName4")]
+spark = NodePath("Spark")
 dossier_body = NodePath("Desk/Papers/DossierBody")
 task_body = NodePath("Desk/Papers/TaskBody")
 big_button = NodePath("Desk/BigButton")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=339595445]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=276778026]
 environment = SubResource("Environment_room")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1431727269]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=922782376]
 transform = Transform3D(0.8253356, -0.44229966, 0.3509874, 0, 0.62161, 0.7833269, -0.5646425, -0.6465076, 0.51303685, 0, 0, 0)
 light_energy = 0.8
 
-[node name="DeadSideLight" type="OmniLight3D" parent="." unique_id=1611910591]
+[node name="DeadSideLight" type="OmniLight3D" parent="." unique_id=477052551]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.4, -0.5)
 light_color = Color(0.45, 0.9, 0.85, 1)
 light_energy = 1.4
 omni_range = 6.5
 
-[node name="LivingSideLight" type="OmniLight3D" parent="." unique_id=1449801001]
+[node name="LivingSideLight" type="OmniLight3D" parent="." unique_id=1917579396]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.4, -0.5)
 light_color = Color(1, 0.82, 0.6, 1)
 light_energy = 1.2
 omni_range = 6.5
 
-[node name="Camera" type="Camera3D" parent="." unique_id=1475763595 groups=["world_camera"]]
+[node name="Camera" type="Camera3D" parent="." unique_id=1278815429 groups=["world_camera"]]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.64278734, 0.7660447, 0, -0.7660447, 0.64278734, 0, 8, 6.7)
+transform = Transform3D(1, 0, 0, 0, 0.7719525, 0.6356802, 0, -0.6356802, 0.7719525, 0, 8, 8.260511)
 cull_mask = 1048573
 projection = 1
 current = true
 size = 7.0
 
-[node name="Floor" type="StaticBody3D" parent="." unique_id=508443167]
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1325773123]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=365782292]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=729697431]
 mesh = SubResource("BoxMesh_floor")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=523365768]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1260170602]
 shape = SubResource("BoxShape3D_floor")
 
-[node name="WallBack" type="StaticBody3D" parent="." unique_id=520071754]
+[node name="WallBack" type="StaticBody3D" parent="." unique_id=1726541854]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -5.8)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WallBack" unique_id=1061946049]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallBack" unique_id=1021710489]
 mesh = SubResource("BoxMesh_wall_back")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WallBack" unique_id=2113037613]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallBack" unique_id=1379565855]
 shape = SubResource("BoxShape3D_wall_back")
 
-[node name="WallLeft" type="StaticBody3D" parent="." unique_id=1977287703]
+[node name="WallLeft" type="StaticBody3D" parent="." unique_id=803560384]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8, 1.3, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WallLeft" unique_id=710433271]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallLeft" unique_id=556860510]
 mesh = SubResource("BoxMesh_wall_side")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft" unique_id=1490576518]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft" unique_id=233649050]
 shape = SubResource("BoxShape3D_wall_side")
 
-[node name="WallRight" type="StaticBody3D" parent="." unique_id=1928390856]
+[node name="WallRight" type="StaticBody3D" parent="." unique_id=2139305517]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.3, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WallRight" unique_id=1365673781]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallRight" unique_id=1236477963]
 mesh = SubResource("BoxMesh_wall_side")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight" unique_id=123322304]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight" unique_id=1575822655]
 shape = SubResource("BoxShape3D_wall_side")
 
-[node name="FrontBarrier" type="StaticBody3D" parent="." unique_id=1699969591]
+[node name="FrontBarrier" type="StaticBody3D" parent="." unique_id=323847949]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 6.2)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontBarrier" unique_id=799348080]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontBarrier" unique_id=38628829]
 shape = SubResource("BoxShape3D_wall_back")
 
-[node name="SkirtBack" type="MeshInstance3D" parent="." unique_id=632773]
+[node name="SkirtBack" type="MeshInstance3D" parent="." unique_id=440146730]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, -5.55)
 mesh = SubResource("BoxMesh_skirt_back")
 
-[node name="SkirtLeft" type="MeshInstance3D" parent="." unique_id=302504659]
+[node name="SkirtLeft" type="MeshInstance3D" parent="." unique_id=1203754542]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.55, 0.15, 0)
 mesh = SubResource("BoxMesh_skirt_side")
 
-[node name="SkirtRight" type="MeshInstance3D" parent="." unique_id=633940087]
+[node name="SkirtRight" type="MeshInstance3D" parent="." unique_id=196763237]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.55, 0.15, 0)
 mesh = SubResource("BoxMesh_skirt_side")
 
-[node name="Desk" type="StaticBody3D" parent="." unique_id=1067804738 groups=["interactable"]]
+[node name="Desk" type="StaticBody3D" parent="." unique_id=112321246 groups=["interactable"]]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7090669, 0.4, 4.0430956)
 script = ExtResource("5_desk")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Desk" unique_id=938739701]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Desk" unique_id=1671979564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14300537, 0, -0.50146484)
 mesh = SubResource("BoxMesh_desk")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk" unique_id=1621037833]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk" unique_id=115410399]
 shape = SubResource("BoxShape3D_desk")
 
-[node name="ViewPoint" type="Camera3D" parent="Desk" unique_id=806576144]
+[node name="ViewPoint" type="Camera3D" parent="Desk" unique_id=353675245]
 unique_name_in_owner = true
-transform = Transform3D(0.99947745, 0.017464776, -0.027199619, 0.027349351, -0.008392514, 0.9995907, 0.017229354, -0.99981225, -0.008865778, 0.09852958, 1.5259539, -0.48221272)
+transform = Transform3D(0.99961156, 0.006073706, -0.027199967, 0.027252281, -0.00870375, 0.9995907, 0.005834505, -0.9999437, -0.00886589, 0.063188255, 1.5247601, -0.50838727)
 cull_mask = 1048573
 projection = 1
 size = 1.9634405
 
-[node name="BigButton" type="StaticBody3D" parent="Desk" unique_id=417046484]
+[node name="BigButton" type="StaticBody3D" parent="Desk" unique_id=480191606]
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Desk/BigButton" unique_id=1794534421]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Desk/BigButton" unique_id=464258166]
 transform = Transform3D(1, 0, 0, 0, 0.06883401, 0, 0, 0, 1, -1.0294716, 0.48478648, -0.7998004)
 mesh = SubResource("CylinderMesh_5d13o")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/BigButton" unique_id=1514435715]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/BigButton" unique_id=1354446574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0294716, 0.05848649, -0.7998004)
 shape = SubResource("CylinderShape3D_ostoq")
 
-[node name="Papers" type="Node3D" parent="Desk" unique_id=372336875]
+[node name="Papers" type="Node3D" parent="Desk" unique_id=719186121]
 
-[node name="DossierBody" type="StaticBody3D" parent="Desk/Papers" unique_id=873488694]
+[node name="DossierBody" type="StaticBody3D" parent="Desk/Papers" unique_id=74100312]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6891675, 0.40615782, -1.0448608)
 
-[node name="DossierPaper" type="MeshInstance3D" parent="Desk/Papers/DossierBody" unique_id=604496853]
+[node name="DossierPaper" type="MeshInstance3D" parent="Desk/Papers/DossierBody" unique_id=575265408]
 transform = Transform3D(0.5354077, 0, 0, 0, 1, 0, 0, 0, 0.35679787, 0, 0, 0)
 mesh = SubResource("PlaneMesh_ostoq")
 
-[node name="DossierLabel" type="Label3D" parent="Desk/Papers/DossierBody/DossierPaper" unique_id=1246000112]
-transform = Transform3D(1, 0, 0, 0, -0.15643528, 0.9876882, 0, -0.9876884, -0.15643528, -0.014131069, 0.029421568, -0.032546043)
+[node name="DossierLabel" type="Label3D" parent="Desk/Papers/DossierBody/DossierPaper" unique_id=123547614]
+transform = Transform3D(1, 0, 0, 0, 0.09306412, 0.9956601, 0, -0.99566036, 0.09306405, -0.014131069, 0.029421568, -0.032546043)
+layers = 3
 texture_filter = 1
 text = "Dossier"
 font_size = 64
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/Papers/DossierBody" unique_id=1848210844]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/Papers/DossierBody" unique_id=1622290626]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03765869, -0.08078003, 0.023269653)
 shape = SubResource("BoxShape3D_ajtct")
 
-[node name="TaskBody" type="StaticBody3D" parent="Desk/Papers" unique_id=1866422782]
+[node name="TaskBody" type="StaticBody3D" parent="Desk/Papers" unique_id=450291161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6891675, 0.40615782, -0.099117756)
 
-[node name="TaskPaper" type="MeshInstance3D" parent="Desk/Papers/TaskBody" unique_id=1178504912]
+[node name="TaskPaper" type="MeshInstance3D" parent="Desk/Papers/TaskBody" unique_id=175367209]
 transform = Transform3D(0.5354077, 0, 0, 0, 1, 0, 0, 0, 0.35679787, 0, 0, 0)
 mesh = SubResource("PlaneMesh_ostoq")
 
-[node name="TaskLabel" type="Label3D" parent="Desk/Papers/TaskBody/TaskPaper" unique_id=1496429650]
-transform = Transform3D(1, 0, 0, 0, -0.15643528, 0.9876882, 0, -0.9876884, -0.15643528, -0.014131069, 0.029421568, -0.032546043)
+[node name="TaskLabel" type="Label3D" parent="Desk/Papers/TaskBody/TaskPaper" unique_id=87688400]
+transform = Transform3D(1, 0, 0, 0, 0.09306412, 0.9956601, 0, -0.99566036, 0.09306405, -0.014131069, 0.029421568, -0.032546043)
+layers = 2
 texture_filter = 1
 text = "Daily Task"
 font_size = 64
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/Papers/TaskBody" unique_id=1625824048]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/Papers/TaskBody" unique_id=1443026237]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03765869, -0.08078003, 0.023269653)
 shape = SubResource("BoxShape3D_ajtct")
 
-[node name="Rug" type="MeshInstance3D" parent="." unique_id=1883333414]
+[node name="DeskLamp" type="Node3D" parent="Desk" unique_id=1921593861]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 1.5483522, 0.48093602, 0.029151917)
+
+[node name="Base" type="MeshInstance3D" parent="Desk/DeskLamp" unique_id=1251782610]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
+mesh = SubResource("BoxMesh_lampbase")
+
+[node name="Stem" type="MeshInstance3D" parent="Desk/DeskLamp" unique_id=736515470]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0)
+mesh = SubResource("BoxMesh_lampstem")
+
+[node name="Shade" type="MeshInstance3D" parent="Desk/DeskLamp" unique_id=628147431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, 0)
+mesh = SubResource("CylinderMesh_desklampshade")
+
+[node name="LampLight" type="OmniLight3D" parent="Desk/DeskLamp" unique_id=847217742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26, 0)
+light_color = Color(1, 0.85, 0.6, 1)
+light_energy = 0.5
+omni_range = 2.2
+
+[node name="Rug" type="MeshInstance3D" parent="." unique_id=756902880]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16021705, 0.02, 0.30692124)
 mesh = SubResource("BoxMesh_rug")
 
-[node name="Player" parent="." unique_id=2077637193 instance=ExtResource("2_player")]
+[node name="Player" parent="." unique_id=643071954 instance=ExtResource("2_player")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
-[node name="Jack1" parent="." unique_id=472071866 instance=ExtResource("3_jack")]
+[node name="Jack1" parent="." unique_id=1920404816 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, -4)
 message = "01"
+port_texture = ExtResource("11_pt1")
 
-[node name="Jack2" parent="." unique_id=1498691325 instance=ExtResource("3_jack")]
+[node name="Jack2" parent="." unique_id=330148318 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, -2)
 message = "02"
+port_texture = ExtResource("12_pt2")
 
-[node name="Jack3" parent="." unique_id=1562588668 instance=ExtResource("3_jack")]
+[node name="Jack3" parent="." unique_id=448146398 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, 0)
 message = "03"
+port_texture = ExtResource("13_pt3")
 
-[node name="Jack4" parent="." unique_id=1681611688 instance=ExtResource("3_jack")]
+[node name="Jack4" parent="." unique_id=1362820005 instance=ExtResource("3_jack")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.3, 0, 2)
 message = "04"
+port_texture = ExtResource("14_pt4")
 
-[node name="SocketA" parent="." unique_id=562388639 groups=["endpoints"] instance=ExtResource("4_socket")]
+[node name="SocketA" parent="." unique_id=1072533079 groups=["endpoints"] instance=ExtResource("4_socket")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -4)
 message = "AA"
+panel_texture = ExtResource("7_sk1")
 
-[node name="SocketB" parent="." unique_id=544747551 groups=["endpoints"] instance=ExtResource("4_socket")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -2.5)
+[node name="SocketB" parent="." unique_id=274109925 groups=["endpoints"] instance=ExtResource("4_socket")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -2)
 message = "BB"
+panel_texture = ExtResource("8_sk2")
 
-[node name="SocketC" parent="." unique_id=809291900 groups=["endpoints"] instance=ExtResource("4_socket")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, -1)
+[node name="SocketC" parent="." unique_id=1701277048 groups=["endpoints"] instance=ExtResource("4_socket")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, 0)
 message = "CC"
+panel_texture = ExtResource("9_sk3")
 
-[node name="SocketD" parent="." unique_id=570589382 groups=["endpoints"] instance=ExtResource("4_socket")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, 0.5)
+[node name="SocketD" parent="." unique_id=1773544083 groups=["endpoints"] instance=ExtResource("4_socket")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, 2)
 message = "DD"
+panel_texture = ExtResource("10_sk4")
 
-[node name="Label3D" type="Label3D" parent="." unique_id=2056913020]
-transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -1.9687657, 0.77352446, -1.2994026)
-visible = false
+[node name="Anchor1" parent="." unique_id=388293322 instance=ExtResource("6_anchor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, -2.4)
+
+[node name="Anchor2" parent="." unique_id=124646172 instance=ExtResource("6_anchor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0, 0.6)
+
+[node name="Anchor3" parent="." unique_id=1719209298 instance=ExtResource("6_anchor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 2.6)
+
+[node name="Anchor4" parent="." unique_id=1428971044 instance=ExtResource("6_anchor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0, -1.6)
+
+[node name="SocketName1" type="Label3D" parent="." unique_id=493811377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 1.6, -4)
 layers = 2
-pixel_size = 0.01
-text = "this is a desk :>"
+billboard = 1
+text = "Listener"
+font_size = 44
 
-[node name="Label3D3" type="Label3D" parent="." unique_id=245919275]
-transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -1.9395695, 0.77352446, 2.0158587)
-visible = false
+[node name="SocketName2" type="Label3D" parent="." unique_id=947926838]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 1.6, -2)
 layers = 2
-pixel_size = 0.01
-text = "from what i understand by nerbon docs:
-is that we take request from the 
-living via the desk i guess"
+billboard = 1
+text = "Listener"
+font_size = 44
 
-[node name="Label3D2" type="Label3D" parent="." unique_id=1681969602]
-transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -4.5436745, 0.07024616, -4.7364864)
-visible = false
+[node name="SocketName3" type="Label3D" parent="." unique_id=830740377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 1.6, 0)
 layers = 2
-pixel_size = 0.01
-text = "not sure about the switchboards"
+billboard = 1
+text = "Listener"
+font_size = 44
 
-[node name="TempLabels" type="Node3D" parent="." unique_id=1488510058]
+[node name="SocketName4" type="Label3D" parent="." unique_id=40701348]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 1.6, 2)
+layers = 2
+billboard = 1
+text = "Listener"
+font_size = 44
 
-[node name="JackLabel1" type="Label3D" parent="TempLabels" unique_id=1989627873]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, -4.7859173)
-text = "Jack 1"
-font_size = 64
+[node name="JackNum1" type="Label3D" parent="." unique_id=903345530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 1.7, -4)
+layers = 2
+billboard = 1
+modulate = Color(0.55, 0.75, 1, 1)
+text = "1"
+font_size = 56
 
-[node name="JackLabel2" type="Label3D" parent="TempLabels" unique_id=636900729]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, -2.6025836)
-text = "Jack 2"
-font_size = 64
+[node name="JackNum2" type="Label3D" parent="." unique_id=853080367]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 1.7, -2)
+layers = 2
+billboard = 1
+modulate = Color(1, 0.5, 0.5, 1)
+text = "2"
+font_size = 56
 
-[node name="JackLabel3" type="Label3D" parent="TempLabels" unique_id=404904410]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, -0.5665939)
-text = "Jack 3"
-font_size = 64
+[node name="JackNum3" type="Label3D" parent="." unique_id=1536159454]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 1.7, 0)
+layers = 2
+billboard = 1
+modulate = Color(1, 0.85, 0.4, 1)
+text = "3"
+font_size = 56
 
-[node name="JackLabel4" type="Label3D" parent="TempLabels" unique_id=45286567]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, 1.4606011)
-text = "Jack 4"
-font_size = 64
+[node name="JackNum4" type="Label3D" parent="." unique_id=384164486]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 1.7, 2)
+layers = 2
+billboard = 1
+modulate = Color(0.6, 1, 0.55, 1)
+text = "4"
+font_size = 56
 
-[node name="SocketLabel1" type="Label3D" parent="TempLabels" unique_id=832283672]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -4.2382464)
-text = "Socket 1"
-font_size = 64
+[node name="Spark" type="Node3D" parent="." unique_id=540023193]
+visible = false
 
-[node name="SocketLabel2" type="Label3D" parent="TempLabels" unique_id=286053926]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -2.8431253)
-text = "Socket 2"
-font_size = 64
+[node name="Light" type="OmniLight3D" parent="Spark" unique_id=2011714762]
+light_color = Color(0.75, 0.9, 1, 1)
+light_energy = 0.0
+omni_range = 3.5
 
-[node name="SocketLabel3" type="Label3D" parent="TempLabels" unique_id=333593241]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -1.3468741)
-text = "Socket 3"
-font_size = 64
+[node name="Ball" type="MeshInstance3D" parent="Spark" unique_id=1237239564]
+mesh = SubResource("SphereMesh_spark")
 
-[node name="SocketLabel4" type="Label3D" parent="TempLabels" unique_id=1191533095]
-transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -0.0126901865)
-text = "Socket 4"
-font_size = 64
+[node name="Window1" type="Node3D" parent="." unique_id=62265802]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 1.5, -5.52)
+
+[node name="Frame" type="MeshInstance3D" parent="Window1" unique_id=235485846]
+mesh = SubResource("BoxMesh_winframe")
+
+[node name="Glass" type="MeshInstance3D" parent="Window1" unique_id=71753957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+mesh = SubResource("BoxMesh_winglass")
+
+[node name="MullionV" type="MeshInstance3D" parent="Window1" unique_id=789657467]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
+mesh = SubResource("BoxMesh_mullionv")
+
+[node name="MullionH" type="MeshInstance3D" parent="Window1" unique_id=116764188]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
+mesh = SubResource("BoxMesh_mullionh")
+
+[node name="MoonLight" type="OmniLight3D" parent="Window1" unique_id=1867384203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0.62)
+light_color = Color(0.55, 0.65, 1, 1)
+light_energy = 0.5
+omni_range = 3.5
+
+[node name="Window2" type="Node3D" parent="." unique_id=238679019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 1.5, -5.52)
+
+[node name="Frame" type="MeshInstance3D" parent="Window2" unique_id=1446925321]
+mesh = SubResource("BoxMesh_winframe")
+
+[node name="Glass" type="MeshInstance3D" parent="Window2" unique_id=2050427511]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+mesh = SubResource("BoxMesh_winglass")
+
+[node name="MullionV" type="MeshInstance3D" parent="Window2" unique_id=1185184748]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
+mesh = SubResource("BoxMesh_mullionv")
+
+[node name="MullionH" type="MeshInstance3D" parent="Window2" unique_id=1184906015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
+mesh = SubResource("BoxMesh_mullionh")
+
+[node name="MoonLight" type="OmniLight3D" parent="Window2" unique_id=53350385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0.62)
+light_color = Color(0.55, 0.65, 1, 1)
+light_energy = 0.5
+omni_range = 3.5
+
+[node name="WallClock" type="Node3D" parent="." unique_id=1007324222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -5.5)
+
+[node name="Rim" type="MeshInstance3D" parent="WallClock" unique_id=1556902837]
+mesh = SubResource("BoxMesh_clockrim")
+
+[node name="Face" type="MeshInstance3D" parent="WallClock" unique_id=790547339]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.03)
+mesh = SubResource("BoxMesh_clockface")
+
+[node name="Label3D" type="Label3D" parent="WallClock" unique_id=1476796245]
+transform = Transform3D(1, 0, 0, 0, 0.9088043, 0.4172227, 0, -0.4172227, 0.9088043, 0, -0.54602337, 0.12129927)
+layers = 2
+text = "supposedly a wall clock
+(replace with pixel art)"
+
+[node name="NoticeBoard" type="Node3D" parent="." unique_id=1954712083]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.55, -5.5)
+
+[node name="Frame" type="MeshInstance3D" parent="NoticeBoard" unique_id=454070435]
+mesh = SubResource("BoxMesh_boardframe")
+
+[node name="Cork" type="MeshInstance3D" parent="NoticeBoard" unique_id=845605595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.02)
+mesh = SubResource("BoxMesh_boardcork")
+
+[node name="Note1" type="MeshInstance3D" parent="NoticeBoard" unique_id=1658590732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.07, 0.045)
+mesh = SubResource("BoxMesh_note")
+
+[node name="Note2" type="MeshInstance3D" parent="NoticeBoard" unique_id=1050300174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, -0.07, 0.045)
+mesh = SubResource("BoxMesh_note")
+
+[node name="Label3D" type="Label3D" parent="NoticeBoard" unique_id=271258]
+transform = Transform3D(1, 0, 0, 0, 0.9088043, 0.4172227, 0, -0.4172227, 0.9088043, 0, -0.7531601, 0.12129927)
+layers = 2
+text = "notice board, just an elements
+to make the room more alive
+(replace with pixel art)"
+
+[node name="Poster" type="MeshInstance3D" parent="." unique_id=1794322074]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.6, -5.51)
+mesh = SubResource("BoxMesh_poster")
+
+[node name="Label3D" type="Label3D" parent="Poster" unique_id=170305358]
+transform = Transform3D(1, 0, 0, 0, 0.9088043, 0.4172227, 0, -0.4172227, 0.9088043, 0, 0.3714819, 0.12129927)
+layers = 2
+text = "poster of anything
+(replace with pixel art)"
+
+[node name="FilingCabinet" type="StaticBody3D" parent="." unique_id=1432162029]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.7, 0.55, -5.1)
+
+[node name="Body" type="MeshInstance3D" parent="FilingCabinet" unique_id=925930118]
+mesh = SubResource("BoxMesh_cabinet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FilingCabinet" unique_id=153117631]
+shape = SubResource("BoxShape3D_cabinet")
+
+[node name="Drawer1" type="MeshInstance3D" parent="FilingCabinet" unique_id=871754052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0.27)
+mesh = SubResource("BoxMesh_drawer")
+
+[node name="Drawer2" type="MeshInstance3D" parent="FilingCabinet" unique_id=1094351715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.27)
+mesh = SubResource("BoxMesh_drawer")
+
+[node name="Drawer3" type="MeshInstance3D" parent="FilingCabinet" unique_id=1628286758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.27)
+mesh = SubResource("BoxMesh_drawer")
+
+[node name="DeskChair" type="StaticBody3D" parent="." unique_id=1385183816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 5.15)
+
+[node name="Seat" type="MeshInstance3D" parent="DeskChair" unique_id=545026527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_chairseat")
+
+[node name="Back" type="MeshInstance3D" parent="DeskChair" unique_id=1383508919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85595006, 0.21)
+mesh = SubResource("BoxMesh_chairback")
+
+[node name="Legs" type="MeshInstance3D" parent="DeskChair" unique_id=1321656394]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+mesh = SubResource("BoxMesh_chairlegs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeskChair" unique_id=310120100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_chair")
+
+[node name="CableTrayLeft" type="MeshInstance3D" parent="." unique_id=537991303]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.35, 0.035, -1)
+mesh = SubResource("BoxMesh_tray")
+
+[node name="CableTrayRight" type="MeshInstance3D" parent="." unique_id=578108398]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.35, 0.035, -1)
+mesh = SubResource("BoxMesh_tray")

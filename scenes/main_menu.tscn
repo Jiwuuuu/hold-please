@@ -1,0 +1,440 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://scenes/menu_world.tscn" id="2_room"]
+[ext_resource type="Shader" path="res://assets/shaders/crt.gdshader" id="3_crt"]
+[ext_resource type="Script" path="res://scripts/player_camera.gd" id="4_pcam"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("3_crt")
+shader_parameter/scanlines_count = 2.1
+shader_parameter/scanlines_intensity = 0.12
+shader_parameter/color_offset = 1.5
+shader_parameter/blur = 0.2
+shader_parameter/warp_amount = Vector2(0.045, 0.06)
+shader_parameter/vignette_strength = 0.35
+
+[sub_resource type="World3D" id="World3D_menu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+bg_color = Color(0.12, 0.11, 0.16, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.55, 0.53, 0.3)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+bg_color = Color(0.17, 0.16, 0.23, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 1, 0.92, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+bg_color = Color(0.07, 0.07, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 1, 0.92, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_focus"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 1, 0.92, 0.45)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_service"]
+content_margin_left = 18.0
+content_margin_top = 14.0
+content_margin_right = 18.0
+content_margin_bottom = 14.0
+bg_color = Color(0.06, 0.08, 0.07, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.55, 0.53, 0.25)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="Theme" id="Theme_menu"]
+Button/colors/font_color = Color(0.88, 0.86, 0.92, 1)
+Button/colors/font_hover_color = Color(1, 0.95, 0.85, 1)
+Button/colors/font_pressed_color = Color(0.5, 1, 0.92, 1)
+Button/styles/focus = SubResource("StyleBoxFlat_btn_focus")
+Button/styles/hover = SubResource("StyleBoxFlat_btn_hover")
+Button/styles/normal = SubResource("StyleBoxFlat_btn")
+Button/styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+
+[node name="MainMenu" type="Node"]
+script = ExtResource("1_menu")
+
+[node name="Container" type="SubViewportContainer" parent="."]
+unique_name_in_owner = true
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+
+[node name="WorldViewport" type="SubViewport" parent="Container"]
+world_3d = SubResource("World3D_menu")
+handle_input_locally = false
+
+[node name="MenuWorld" parent="Container/WorldViewport" instance=ExtResource("2_room")]
+
+[node name="MenuCamera" type="Camera3D" parent="Container/WorldViewport" groups=["world_camera"]]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.96592583, 0.25881905, 0, -0.25881905, 0.96592583, 0, 7.96, 12)
+cull_mask = 1048573
+projection = 1
+current = true
+size = 12.0
+
+[node name="HomeView" type="Camera3D" parent="Container/WorldViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.96592583, 0.25881905, 0, -0.25881905, 0.96592583, 0, 7.96, 12)
+projection = 1
+size = 12.0
+
+[node name="SettingsView" type="Camera3D" parent="Container/WorldViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.96592583, 0.25881905, 0, -0.25881905, 0.96592583, -2.550168, 3.5207, 4)
+projection = 1
+size = 3.2
+
+[node name="CreditsView" type="Camera3D" parent="Container/WorldViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.96592583, 0.25881905, 0, -0.25881905, 0.96592583, 4.0660877, 4.9403, 4)
+projection = 1
+size = 2.8
+
+[node name="HowToPlayView" type="Camera3D" parent="Container/WorldViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.96592583, 0.25881905, 0, -0.25881905, 0.96592583, 1.6, 3.6729, 4)
+projection = 1
+size = 2.4
+
+[node name="CrispContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="CrispViewport" type="SubViewport" parent="CrispContainer"]
+world_3d = SubResource("World3D_menu")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="CrispCamera" type="Camera3D" parent="CrispContainer/CrispViewport"]
+cull_mask = 2
+projection = 1
+current = true
+size = 12.0
+script = ExtResource("4_pcam")
+
+[node name="Menu" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+
+[node name="Home" type="Control" parent="Menu"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+
+[node name="Tagline" type="Label" parent="Menu/Home"]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 262.0
+offset_right = 520.0
+offset_bottom = 292.0
+theme_override_colors/font_color = Color(0.6, 0.85, 0.82, 1)
+theme_override_font_sizes/font_size = 18
+text = "night shift at the afterlife exchange"
+
+[node name="Buttons" type="VBoxContainer" parent="Menu/Home"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 300.0
+offset_right = 364.0
+offset_bottom = 660.0
+theme_override_constants/separation = 12
+
+[node name="ContinueButton" type="Button" parent="Menu/Home/Buttons"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Continue"
+alignment = 0
+
+[node name="StartButton" type="Button" parent="Menu/Home/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "New Shift"
+alignment = 0
+
+[node name="SettingsButton" type="Button" parent="Menu/Home/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Settings"
+alignment = 0
+
+[node name="HowToPlayButton" type="Button" parent="Menu/Home/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "How to Play"
+alignment = 0
+
+[node name="CreditsButton" type="Button" parent="Menu/Home/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Credits"
+alignment = 0
+
+[node name="QuitButton" type="Button" parent="Menu/Home/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Quit"
+alignment = 0
+
+[node name="SettingsPanel" type="Control" parent="Menu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+
+[node name="Card" type="PanelContainer" parent="Menu/SettingsPanel"]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 240.0
+offset_right = 832.0
+offset_bottom = 544.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_service")
+
+[node name="VBox" type="VBoxContainer" parent="Menu/SettingsPanel/Card"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MasterRow" type="HBoxContainer" parent="Menu/SettingsPanel/Card/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Menu/SettingsPanel/Card/VBox/MasterRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.84, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "Master"
+
+[node name="MasterSlider" type="HSlider" parent="Menu/SettingsPanel/Card/VBox/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="MusicRow" type="HBoxContainer" parent="Menu/SettingsPanel/Card/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Menu/SettingsPanel/Card/VBox/MusicRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.84, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="Menu/SettingsPanel/Card/VBox/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="SFXRow" type="HBoxContainer" parent="Menu/SettingsPanel/Card/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Menu/SettingsPanel/Card/VBox/SFXRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.84, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "SFX"
+
+[node name="SFXSlider" type="HSlider" parent="Menu/SettingsPanel/Card/VBox/SFXRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="FullscreenRow" type="HBoxContainer" parent="Menu/SettingsPanel/Card/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="Menu/SettingsPanel/Card/VBox/FullscreenRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.84, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "Fullscreen"
+
+[node name="FullscreenCheck" type="CheckButton" parent="Menu/SettingsPanel/Card/VBox/FullscreenRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Menu/SettingsPanel/Card/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="SettingsBack" type="Button" parent="Menu/SettingsPanel/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Back"
+
+[node name="CreditsPanel" type="Control" parent="Menu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+
+[node name="CreditsBack" type="Button" parent="Menu/CreditsPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -86.0
+offset_right = 80.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "Back"
+
+[node name="HowToPlayPanel" type="Control" parent="Menu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+
+[node name="HowToPlayBack" type="Button" parent="Menu/HowToPlayPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -86.0
+offset_right = 80.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "Back"
+
+[node name="NewShiftConfirm" type="ConfirmationDialog" parent="Menu"]
+unique_name_in_owner = true
+title = "Start over?"
+dialog_text = "A shift is already in progress. Starting a new one loses that night."
+ok_button_text = "New Shift"
+
+[node name="FXLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="CRTRect" type="ColorRect" parent="FXLayer"]
+material = SubResource("ShaderMaterial_crt")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

@@ -1,6 +1,6 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://itm5rivrio3r"]
 
-[ext_resource type="Script" path="res://scripts/jack.gd" id="1_jack"]
+[ext_resource type="Script" uid="uid://wfvekfbu78qe" path="res://scripts/anchor.gd" id="1_gdjek"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jack"]
 size = Vector3(0.6, 1.2, 0.4)
@@ -20,24 +20,24 @@ albedo_color = Color(1, 0.72, 0.2, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_lamp"]
 size = Vector3(0.18, 0.18, 0.18)
 
-[node name="Jack" type="StaticBody3D" groups=["interactable", "jacks"]]
-script = ExtResource("1_jack")
+[node name="Anchor" type="StaticBody3D" groups=["interactable", "jacks", "sockets"]]
+script = ExtResource("1_gdjek")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("BoxShape3D_jack")
 
 [node name="Body" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
-position = Vector3(0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 mesh = SubResource("BoxMesh_body")
 
 [node name="Lamp" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
-position = Vector3(0, 1.05, 0.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.24)
 material_override = SubResource("StandardMaterial3D_lamp")
 mesh = SubResource("BoxMesh_lamp")
 
 [node name="CableAnchor" type="Marker3D" parent="."]
 unique_name_in_owner = true
-position = Vector3(0, 0.7, 0.26)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0.26)

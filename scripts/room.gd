@@ -3,7 +3,7 @@ extends Node3D
 #the operator carries cables across the floor between them. wires the pieces
 #together and drives the camera follow.
 
-const CABLE_SCENE: PackedScene = preload("res://scenes/cable.tscn")
+const CABLE_SCENE: PackedScene = preload("res://scenes/props/cable.tscn")
 
 @export var camera_follow_speed: float = 3.0
 #how far the camera focus may drift from room center (x and z) before it
@@ -43,6 +43,7 @@ func _ready() -> void:
 	for socket: Node in get_tree().get_nodes_in_group("sockets"):
 		if socket is Socket:
 			(socket as Socket).plug_seated.connect(_on_plug_seated)
+			(socket as Socket).unplug_requested.connect(_on_unplug_requested)
 		elif socket is Anchor:
 			(socket as Anchor).plug_seated.connect(_on_plug_seated)
 
@@ -107,6 +108,7 @@ func _start_cam_tween(target: Transform3D, target_size: float) -> void:
 func _on_plug_grabbed(jack: Node) -> void:
 	var cable: Cable = CABLE_SCENE.instantiate()
 	cable.setup(jack.cable_anchor(), _player.carry_point())
+	cable.origin_node = jack
 	add_child(cable)
 	_player.carried_cable = cable
 	_player.carried_cable.message = jack.message
@@ -117,17 +119,148 @@ func _on_plug_seated(socket: Node) -> void:
 	if _player.carried_cable == null:
 		return
 	socket.message += _player.carried_cable.message
+	socket.incoming_cable = _player.carried_cable
 	_player.carried_cable.seat_to(socket.snap_point())
+	_player.carried_cable.seat_node = socket
 	_player.carried_cable = null
 	socket.flash()
-	get_solution()
+
+
+#free hands on an occupied socket: pull the whole line out, walking the
+#cable chain back through any anchors until the jack lights up again
+func _on_unplug_requested(socket: Socket) -> void:
+	var cable: Cable = socket.incoming_cable
+	socket.reset()
+	while cable != null:
+		var origin: Node3D = cable.origin_node
+		cable.queue_free()
+		cable = null
+		if origin is Anchor:
+			cable = (origin as Anchor).incoming_cable
+			(origin as Anchor).reset()
+		elif origin is Jack:
+			(origin as Jack).reset_waiting()
 
 #this section is used to gather the solution from the sockets/endpoints
 var solution : Array[String] = []
 
 func get_solution():
+	solution.clear()
 	for endpoint: Node in get_tree().get_nodes_in_group("endpoints"):
 		solution.append(endpoint.message)
+
+
+#the floating name tags above the sockets, assigned in room.tscn
+@export var socket_name_labels : Array[Label3D] = []
+#the little electric flash shown where two lines tangle
+@export var spark : Node3D
+
+#write tonight's listening ghosts above their sockets
+func set_listening(names: Array[String]) -> void:
+	for i: int in socket_name_labels.size():
+		socket_name_labels[i].text = names[i] if i < names.size() else ""
+
+
+#the puzzle manager reads carry state off the player for the hud
+func player() -> Player:
+	return _player
+
+
+#the pause menu asks this so esc at the desk closes the desk, not the game
+func at_desk() -> bool:
+	return _desk_mode
+
+
+#a slow electric flash at the last crossing, so it's still fading
+#when the player pulls back from the desk
+func flash_spark() -> void:
+	if spark == null:
+		return
+	spark.global_position = last_crossing + Vector3(0.0, 0.25, 0.0)
+	spark.visible = true
+	var light: OmniLight3D = spark.get_node("Light") as OmniLight3D
+	if light != null:
+		light.light_energy = 4.0
+		var tween: Tween = create_tween()
+		tween.tween_property(light, "light_energy", 0.0, 2.5)
+		tween.tween_callback(func() -> void: spark.visible = false)
+
+
+#light up jacks 1..callers and darken the rest, so only real callers ring.
+#jack numbers come from their messages ("01".."04")
+func set_active_callers(callers: int) -> void:
+	for node: Node in get_tree().get_nodes_in_group("jacks"):
+		if node is Jack:
+			var jack: Jack = node
+			if jack.message.to_int() <= callers:
+				jack.reset_waiting()
+			else:
+				jack.reset_idle()
+
+
+#clear every cable and put jacks, sockets and anchors back to their rest
+#state, ready for the next puzzle (or a retry)
+func reset_board() -> void:
+	if _player.carried_cable != null:
+		_player.carried_cable.queue_free()
+		_player.carried_cable = null
+	for cable: Node in get_children():
+		if cable is Cable:
+			cable.queue_free()
+	for node: Node in get_tree().get_nodes_in_group("endpoints"):
+		if node is Socket:
+			(node as Socket).reset()
+	for node: Node in get_tree().get_nodes_in_group("sockets"):
+		if node is Anchor:
+			(node as Anchor).reset()
+
+
+#every completed line as a run of floor points: socket, anchors, jack.
+#each path also marks which of its segments are lifted off the floor —
+#a segment touching an anchor post hangs high enough to pass over another line
+func _connection_paths() -> Array[Dictionary]:
+	var paths: Array[Dictionary] = []
+	for node: Node in get_tree().get_nodes_in_group("endpoints"):
+		if node is Socket and (node as Socket).occupied:
+			var points: PackedVector2Array = PackedVector2Array()
+			var anchor_flags: Array[bool] = [false]
+			points.append(Vector2(node.global_position.x, node.global_position.z))
+			var cable: Cable = (node as Socket).incoming_cable
+			while cable != null:
+				var origin: Node3D = cable.origin_node
+				points.append(Vector2(origin.global_position.x, origin.global_position.z))
+				anchor_flags.append(origin is Anchor)
+				cable = (origin as Anchor).incoming_cable if origin is Anchor else null
+			var lifted: Array[bool] = []
+			for s: int in points.size() - 1:
+				lifted.append(anchor_flags[s] or anchor_flags[s + 1])
+			paths.append({"points": points, "lifted": lifted})
+	return paths
+
+
+#where the last detected crossing sits on the floor, for feedback effects
+var last_crossing: Vector3 = Vector3.ZERO
+
+#count how many times different lines cross on the floor. a crossing is
+#fine when one of the two lines runs through an anchor post there — the
+#post holds it up, so it passes over the other line instead of tangling
+func count_crossings() -> int:
+	var paths: Array[Dictionary] = _connection_paths()
+	var crossings: int = 0
+	for i: int in paths.size():
+		for j: int in range(i + 1, paths.size()):
+			var pa: PackedVector2Array = paths[i].points
+			var pb: PackedVector2Array = paths[j].points
+			for a: int in pa.size() - 1:
+				for b: int in pb.size() - 1:
+					if paths[i].lifted[a] or paths[j].lifted[b]:
+						continue
+					var hit: Variant = Geometry2D.segment_intersects_segment(
+						pa[a], pa[a + 1], pb[b], pb[b + 1])
+					if hit != null:
+						crossings += 1
+						last_crossing = Vector3((hit as Vector2).x, 0.1, (hit as Vector2).y)
+	return crossings
 
 
 #because of camera shenanigans, we use brute force and manual raycasting to make the papers on the desk clickable

@@ -22,7 +22,7 @@ func set_page():
 	pages[current_page].visible = true
 func page_forward():
 	current_page += 1
-	if current_page >= (pages.size() -1):
+	if current_page >= pages.size():
 		current_page = 0
 	set_page()
 func page_back():

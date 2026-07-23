@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dwvx8h53idhdg"]
+
+[ext_resource type="Script" uid="uid://4jk6ryclhv8w" path="res://scripts/socket.gd" id="1_socket"]
+[ext_resource type="Texture2D" uid="uid://c5y6rps7q07sf" path="res://assets/sprites/socket1L1.png" id="2_panel"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_socket"]
+size = Vector3(0.6, 1, 0.4)
+
+[node name="Socket" type="StaticBody3D" unique_id=1450706465 groups=["interactable", "sockets"]]
+script = ExtResource("1_socket")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1278774293]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_socket")
+
+[node name="Body" type="Sprite3D" parent="." unique_id=386909674]
+unique_name_in_owner = true
+transform = Transform3D(0.644628, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.05)
+layers = 2
+pixel_size = 0.018
+billboard = 2
+texture_filter = 0
+texture = ExtResource("2_panel")
+
+[node name="SnapPoint" type="Marker3D" parent="." unique_id=289950716]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0.28)

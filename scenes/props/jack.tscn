@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://brqqjesnt52eb"]
+
+[ext_resource type="Script" uid="uid://dy8rnq7nxb8bv" path="res://scripts/jack.gd" id="1_jack"]
+[ext_resource type="Texture2D" uid="uid://cxija3f162j0u" path="res://assets/sprites/socket1L5.png" id="2_port"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jack"]
+size = Vector3(0.6, 1.2, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lamp"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_color = Color(1, 0.72, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lamp"]
+size = Vector3(0.18, 0.18, 0.18)
+
+[node name="Jack" type="StaticBody3D" unique_id=1081501217 groups=["interactable", "jacks"]]
+script = ExtResource("1_jack")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2138740794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_jack")
+
+[node name="Body" type="Sprite3D" parent="." unique_id=1701190356]
+unique_name_in_owner = true
+transform = Transform3D(0.64196455, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.05)
+layers = 2
+pixel_size = 0.018
+billboard = 2
+texture_filter = 0
+texture = ExtResource("2_port")
+
+[node name="Lamp" type="MeshInstance3D" parent="." unique_id=549066133]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0.1)
+material_override = SubResource("StandardMaterial3D_lamp")
+mesh = SubResource("BoxMesh_lamp")
+
+[node name="CableAnchor" type="Marker3D" parent="." unique_id=2129524263]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0.26)

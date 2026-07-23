@@ -11,9 +11,17 @@ signal interacted(target: Node3D)
 @export var accel: float = 20.0
 @export var fall_gravity: float = 20.0
 
+#the two walk sheets from the artist, assigned in player.tscn
+@export var walk_sheet : Texture2D
+@export var carry_sheet : Texture2D
+@export var frame_time : float = 0.09
+
 #the room turns this off while the camera sits at the desk
 var controls_enabled: bool = true
 var carried_cable: Cable = null
+
+var _anim_clock: float = 0.0
+var _was_carrying: bool = false
 
 @onready var _visual: Sprite3D = %Visual
 @onready var _carry_point: Marker3D = %CarryPoint
@@ -33,8 +41,25 @@ func _physics_process(delta: float) -> void:
 	if absf(velocity.x) > 0.05:
 		_visual.flip_h = velocity.x < 0.0
 
+	_animate(delta)
+
 	if controls_enabled and Inputs.interact_pressed():
 		_try_interact()
+
+
+#step the walk cycle while moving, swap sheets when the hands change
+func _animate(delta: float) -> void:
+	if is_carrying() != _was_carrying:
+		_was_carrying = is_carrying()
+		var sheet: Texture2D = carry_sheet if _was_carrying else walk_sheet
+		if sheet != null:
+			_visual.texture = sheet
+	if Vector2(velocity.x, velocity.z).length() > 0.3:
+		_anim_clock += delta
+		_visual.frame = int(_anim_clock / frame_time) % _visual.hframes
+	else:
+		_anim_clock = 0.0
+		_visual.frame = 0
 
 
 #where the carried plug and cable end ride

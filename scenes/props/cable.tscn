@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/cable.gd" id="1_cable"]
+[ext_resource type="Texture2D" path="res://assets/sprites/audioJack.png" id="2_plug"]
 
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_ribbon"]
 resource_local_to_scene = true
@@ -9,14 +10,6 @@ resource_local_to_scene = true
 shading_mode = 0
 cull_mode = 2
 albedo_color = Color(0.13, 0.11, 0.1, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plug"]
-shading_mode = 0
-albedo_color = Color(0.75, 0.2, 0.15, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_plug"]
-material = SubResource("StandardMaterial3D_plug")
-size = Vector3(0.16, 0.16, 0.3)
 
 [node name="Cable" type="Node3D"]
 script = ExtResource("1_cable")
@@ -27,7 +20,10 @@ cast_shadow = 0
 material_override = SubResource("StandardMaterial3D_ribbon")
 mesh = SubResource("ImmediateMesh_ribbon")
 
-[node name="Plug" type="MeshInstance3D" parent="."]
+[node name="Plug" type="Sprite3D" parent="."]
 unique_name_in_owner = true
-cast_shadow = 0
-mesh = SubResource("BoxMesh_plug")
+pixel_size = 0.006
+billboard = 2
+shaded = false
+texture_filter = 0
+texture = ExtResource("2_plug")

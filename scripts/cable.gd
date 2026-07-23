@@ -14,6 +14,11 @@ extends Node3D
 #for the cable scene, it should always be ""
 @export var message : String = ""
 
+#the jack or anchor this cable came out of, and the socket/anchor it seated
+#into. the room sets these so unplugging can walk the chain back to the jack.
+var origin_node : Node3D = null
+var seat_node : Node3D = null
+
 @export var point_count: int = 14
 @export var rest_length: float = 4.0
 @export var gravity: float = 18.0
@@ -29,7 +34,7 @@ var _prev_points: PackedVector3Array = PackedVector3Array()
 var _mesh: ImmediateMesh
 
 @onready var _ribbon: MeshInstance3D = %Ribbon
-@onready var _plug: MeshInstance3D = %Plug
+@onready var _plug: Sprite3D = %Plug
 
 
 func _ready() -> void:
