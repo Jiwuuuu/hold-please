@@ -1,11 +1,12 @@
-[gd_scene format=3 uid="uid://dosx1rjxg4cn"]
+[gd_scene format=3 uid="uid://jy3acvr7243n"]
 
-[ext_resource type="Script" uid="uid://14f4uf45t4nq" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="PackedScene" uid="uid://gr70c2hwomm1" path="res://scenes/room.tscn" id="2_room"]
-[ext_resource type="Script" uid="uid://l07cxkv6bxk0" path="res://scripts/player_camera.gd" id="3_pcam"]
-[ext_resource type="Script" uid="uid://b4oqi8npynm0a" path="res://scripts/puzzle_manager.gd" id="4_jyhfs"]
-[ext_resource type="Script" uid="uid://ftnbloup1kga" path="res://scripts/dossier_manager.gd" id="5_tbgi4"]
-[ext_resource type="Script" uid="uid://dn0nv5wpbi5o2" path="res://scripts/task_manager.gd" id="6_tefeu"]
+[ext_resource type="Script" uid="uid://14f4uf45t4nq" path="res://scripts/main.gd" id="1_c6375"]
+[ext_resource type="PackedScene" uid="uid://gr70c2hwomm1" path="res://scenes/room.tscn" id="2_ylpj7"]
+[ext_resource type="Script" uid="uid://l07cxkv6bxk0" path="res://scripts/player_camera.gd" id="3_ar5rt"]
+[ext_resource type="Script" uid="uid://b4oqi8npynm0a" path="res://scripts/puzzle_manager.gd" id="4_a4rx7"]
+[ext_resource type="Script" uid="uid://ftnbloup1kga" path="res://scripts/dossier_manager.gd" id="5_v6sju"]
+[ext_resource type="Script" uid="uid://ds42f2a4r3i4s" path="res://scripts/transitions/transition_manager1.gd" id="5_ylpj7"]
+[ext_resource type="Script" uid="uid://dn0nv5wpbi5o2" path="res://scripts/task_manager.gd" id="6_wtsr7"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -20,8 +21,13 @@ environment = SubResource("Environment_room")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loq3h"]
 
+[sub_resource type="Theme" id="Theme_ostoq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajtct"]
+bg_color = Color(0.07123137, 0.0712314, 0.07123133, 1)
+
 [node name="Main" type="Node" unique_id=1224004559]
-script = ExtResource("1_main")
+script = ExtResource("1_c6375")
 
 [node name="Container" type="SubViewportContainer" parent="." unique_id=1296633216]
 unique_name_in_owner = true
@@ -43,7 +49,7 @@ audio_listener_enable_3d = true
 size = Vector2i(426, 240)
 render_target_update_mode = 4
 
-[node name="Room" parent="Container/WorldViewport" unique_id=1681552665 instance=ExtResource("2_room")]
+[node name="Room" parent="Container/WorldViewport" unique_id=1681552665 instance=ExtResource("2_ylpj7")]
 
 [node name="PlayerContainer" type="SubViewportContainer" parent="." unique_id=1658899019]
 anchors_preset = 15
@@ -67,7 +73,7 @@ cull_mask = 2
 projection = 1
 current = true
 size = 7.0
-script = ExtResource("3_pcam")
+script = ExtResource("3_ar5rt")
 
 [node name="DossierPanel" type="Panel" parent="." unique_id=1853812274]
 visible = false
@@ -255,7 +261,6 @@ theme_override_font_sizes/font_size = 32
 text = "<<"
 
 [node name="TaskPanel" type="Panel" parent="." unique_id=1161241206]
-visible = false
 offset_right = 1271.0
 offset_bottom = 717.0
 theme = SubResource("Theme_ajtct")
@@ -268,12 +273,11 @@ offset_top = 46.0
 offset_right = 1124.0
 offset_bottom = 563.0
 theme_override_font_sizes/normal_font_size = 24
-text = "Tutorial 1
-Listening: Irene, Charles, Annabeth, Dafne.
+text = "Listening: Irene, Charles, Annabeth, Dafne.
 Caller 01: I’m trying to reconnect with my late mother, I always end up thinking of her around Christmas and, even though a long time passed, I still miss her. Life can be unjust.
 
 [You must connect the only caller, on jack 1, on the correct listener. The listener are on sockets 1, 2, 3, 4 respectively.]
-[Youmay sit at your desk to check this task again, or check the dossier on the ghosts]
+[You may sit at your desk to check this task again, or check the dossier on the ghosts]
 [When you are done, press the big button on your desk to verify]
 "
 
@@ -286,17 +290,49 @@ offset_bottom = 682.0
 theme_override_font_sizes/font_size = 32
 text = "Go Back"
 
-[node name="PuzzleManager" type="Node" parent="." unique_id=2046163139 node_paths=PackedStringArray("room")]
-script = ExtResource("4_jyhfs")
+[node name="TransitionPanel" type="Panel" parent="." unique_id=1733071235]
+visible = false
+offset_right = 1282.0
+offset_bottom = 740.0
+theme = SubResource("Theme_ostoq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ajtct")
+
+[node name="DialogueLabel" type="RichTextLabel" parent="TransitionPanel" unique_id=319731527]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 69.0
+offset_right = 1159.0
+offset_bottom = 638.0
+theme_override_font_sizes/normal_font_size = 36
+
+[node name="Button" type="Button" parent="TransitionPanel" unique_id=485851867]
+visible = false
+layout_mode = 0
+offset_left = 955.0
+offset_top = 622.0
+offset_right = 1193.0
+offset_bottom = 675.0
+theme_override_font_sizes/font_size = 32
+text = "Next Day"
+
+[node name="PuzzleManager" type="Node" parent="." unique_id=2046163139 node_paths=PackedStringArray("room", "tr_manager")]
+script = ExtResource("4_a4rx7")
 room = NodePath("../Container/WorldViewport/Room")
+tr_manager = NodePath("../TransitionManager")
 actual_solution = Array[String](["DD01", "XXXX", "XXXX", "XXXX"])
 
+[node name="TransitionManager" type="Node" parent="." unique_id=1437358524 node_paths=PackedStringArray("tr_panel", "tr_label", "tr_button")]
+script = ExtResource("5_ylpj7")
+tr_panel = NodePath("../TransitionPanel")
+tr_label = NodePath("../TransitionPanel/DialogueLabel")
+tr_button = NodePath("../TransitionPanel/Button")
+
 [node name="DossierManager" type="Node" parent="." unique_id=1568818987 node_paths=PackedStringArray("dossier_panel")]
-script = ExtResource("5_tbgi4")
+script = ExtResource("5_v6sju")
 dossier_panel = NodePath("../DossierPanel")
 
 [node name="TaskManager" type="Node" parent="." unique_id=1476069474 node_paths=PackedStringArray("panel")]
-script = ExtResource("6_tefeu")
+script = ExtResource("6_wtsr7")
 panel = NodePath("../TaskPanel")
 
 [connection signal="big_button_signal" from="Container/WorldViewport/Room" to="PuzzleManager" method="_on_room_big_button_signal"]
@@ -306,3 +342,4 @@ panel = NodePath("../TaskPanel")
 [connection signal="pressed" from="DossierPanel/ForwardButton" to="DossierManager" method="_on_forward_button_pressed"]
 [connection signal="pressed" from="DossierPanel/BackButton" to="DossierManager" method="_on_back_button_pressed"]
 [connection signal="pressed" from="TaskPanel/ByeButton" to="TaskManager" method="_on_bye_button_pressed"]
+[connection signal="pressed" from="TransitionPanel/Button" to="TransitionManager" method="_on_button_pressed"]

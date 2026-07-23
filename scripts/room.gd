@@ -27,7 +27,6 @@ var _cam_tween: Tween
 @onready var _camera: Camera3D = %Camera
 @onready var _desk: Desk = %Desk
 
-
 func _ready() -> void:
 	#the camera is moved by hand in _process, so keep godot's automatic
 	#physics interpolation off for it (the 4.7 docs say to do this)
@@ -129,3 +128,30 @@ var solution : Array[String] = []
 func get_solution():
 	for endpoint: Node in get_tree().get_nodes_in_group("endpoints"):
 		solution.append(endpoint.message)
+
+
+#because of camera shenanigans, we use brute force and manual raycasting to make the papers on the desk clickable
+@export var dossier_body : StaticBody3D
+@export var task_body : StaticBody3D
+#this one is the big button on the desk
+@export var big_button : StaticBody3D
+signal dossier_signal
+signal task_signal
+signal big_button_signal
+
+func _input(event):
+	if event is InputEventMouseButton and _desk_mode:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			var camera = get_viewport().get_camera_3d()
+			var origin = camera.project_ray_origin(event.position)
+			var direction = camera.project_ray_normal(event.position)
+			var destination = origin + direction * 1000
+			
+			var query = PhysicsRayQueryParameters3D.create(origin, destination)
+			var result = get_world_3d().direct_space_state.intersect_ray(query)
+			if result.collider == dossier_body:
+				dossier_signal.emit()
+			elif result.collider == task_body:
+				task_signal.emit()
+			elif result.collider == big_button:
+				big_button_signal.emit()

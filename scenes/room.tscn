@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" path="res://scenes/jack.tscn" id="3_jack"]
 [ext_resource type="PackedScene" path="res://scenes/socket.tscn" id="4_socket"]
 [ext_resource type="Script" uid="uid://cwm7yh3irg6y3" path="res://scripts/desk.gd" id="5_desk"]
-[ext_resource type="PackedScene" uid="uid://itm5rivrio3r" path="res://scenes/anchor.tscn" id="6_jn645"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -63,6 +62,15 @@ size = Vector3(2, 0.8, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_5d13o"]
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ostoq"]
+height = 1.0441895
+radius = 0.52490234
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ostoq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ajtct"]
+size = Vector3(1.2755127, 0.83843994, 0.7690735)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rug"]
 albedo_color = Color(0.32, 0.16, 0.14, 1)
 
@@ -70,8 +78,11 @@ albedo_color = Color(0.32, 0.16, 0.14, 1)
 material = SubResource("StandardMaterial3D_rug")
 size = Vector3(12.666845, 0.04, 9.113256)
 
-[node name="Room" type="Node3D" unique_id=947046454]
+[node name="Room" type="Node3D" unique_id=947046454 node_paths=PackedStringArray("dossier_body", "task_body", "big_button")]
 script = ExtResource("1_room")
+dossier_body = NodePath("Desk/Papers/DossierBody")
+task_body = NodePath("Desk/Papers/TaskBody")
+big_button = NodePath("Desk/BigButton")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=339595445]
 environment = SubResource("Environment_room")
@@ -173,9 +184,51 @@ cull_mask = 1048573
 projection = 1
 size = 1.9634405
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Desk" unique_id=1794534421]
-transform = Transform3D(1, 0, 0, 0, 0.06883401, 0, 0, 0, 1, -1.0294716, 0.48478648, -0.7998003)
+[node name="BigButton" type="StaticBody3D" parent="Desk" unique_id=417046484]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Desk/BigButton" unique_id=1794534421]
+transform = Transform3D(1, 0, 0, 0, 0.06883401, 0, 0, 0, 1, -1.0294716, 0.48478648, -0.7998004)
 mesh = SubResource("CylinderMesh_5d13o")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/BigButton" unique_id=1514435715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0294716, 0.05848649, -0.7998004)
+shape = SubResource("CylinderShape3D_ostoq")
+
+[node name="Papers" type="Node3D" parent="Desk" unique_id=372336875]
+
+[node name="DossierBody" type="StaticBody3D" parent="Desk/Papers" unique_id=873488694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6891675, 0.40615782, -1.0448608)
+
+[node name="DossierPaper" type="MeshInstance3D" parent="Desk/Papers/DossierBody" unique_id=604496853]
+transform = Transform3D(0.5354077, 0, 0, 0, 1, 0, 0, 0, 0.35679787, 0, 0, 0)
+mesh = SubResource("PlaneMesh_ostoq")
+
+[node name="DossierLabel" type="Label3D" parent="Desk/Papers/DossierBody/DossierPaper" unique_id=1246000112]
+transform = Transform3D(1, 0, 0, 0, -0.15643528, 0.9876882, 0, -0.9876884, -0.15643528, -0.014131069, 0.029421568, -0.032546043)
+texture_filter = 1
+text = "Dossier"
+font_size = 64
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/Papers/DossierBody" unique_id=1848210844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03765869, -0.08078003, 0.023269653)
+shape = SubResource("BoxShape3D_ajtct")
+
+[node name="TaskBody" type="StaticBody3D" parent="Desk/Papers" unique_id=1866422782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6891675, 0.40615782, -0.099117756)
+
+[node name="TaskPaper" type="MeshInstance3D" parent="Desk/Papers/TaskBody" unique_id=1178504912]
+transform = Transform3D(0.5354077, 0, 0, 0, 1, 0, 0, 0, 0.35679787, 0, 0, 0)
+mesh = SubResource("PlaneMesh_ostoq")
+
+[node name="TaskLabel" type="Label3D" parent="Desk/Papers/TaskBody/TaskPaper" unique_id=1496429650]
+transform = Transform3D(1, 0, 0, 0, -0.15643528, 0.9876882, 0, -0.9876884, -0.15643528, -0.014131069, 0.029421568, -0.032546043)
+texture_filter = 1
+text = "Daily Task"
+font_size = 64
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Desk/Papers/TaskBody" unique_id=1625824048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03765869, -0.08078003, 0.023269653)
+shape = SubResource("BoxShape3D_ajtct")
 
 [node name="Rug" type="MeshInstance3D" parent="." unique_id=1883333414]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16021705, 0.02, 0.30692124)
@@ -217,9 +270,6 @@ message = "CC"
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.3, 0, 0.5)
 message = "DD"
 
-[node name="Anchor" parent="." unique_id=1082834748 instance=ExtResource("6_jn645")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.1806464)
-
 [node name="Label3D" type="Label3D" parent="." unique_id=2056913020]
 transform = Transform3D(1, 0, 0, 0, 0.021137103, 0.99977666, 0, -0.99977666, 0.021137103, -1.9687657, 0.77352446, -1.2994026)
 visible = false
@@ -242,3 +292,45 @@ visible = false
 layers = 2
 pixel_size = 0.01
 text = "not sure about the switchboards"
+
+[node name="TempLabels" type="Node3D" parent="." unique_id=1488510058]
+
+[node name="JackLabel1" type="Label3D" parent="TempLabels" unique_id=1989627873]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, -4.7859173)
+text = "Jack 1"
+font_size = 64
+
+[node name="JackLabel2" type="Label3D" parent="TempLabels" unique_id=636900729]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, -2.6025836)
+text = "Jack 2"
+font_size = 64
+
+[node name="JackLabel3" type="Label3D" parent="TempLabels" unique_id=404904410]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, -0.5665939)
+text = "Jack 3"
+font_size = 64
+
+[node name="JackLabel4" type="Label3D" parent="TempLabels" unique_id=45286567]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, -6.393607, 0.13526571, 1.4606011)
+text = "Jack 4"
+font_size = 64
+
+[node name="SocketLabel1" type="Label3D" parent="TempLabels" unique_id=832283672]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -4.2382464)
+text = "Socket 1"
+font_size = 64
+
+[node name="SocketLabel2" type="Label3D" parent="TempLabels" unique_id=286053926]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -2.8431253)
+text = "Socket 2"
+font_size = 64
+
+[node name="SocketLabel3" type="Label3D" parent="TempLabels" unique_id=333593241]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -1.3468741)
+text = "Socket 3"
+font_size = 64
+
+[node name="SocketLabel4" type="Label3D" parent="TempLabels" unique_id=1191533095]
+transform = Transform3D(1, 0, 0, 0, -0.2402052, 0.97072214, 0, -0.97072214, -0.2402052, 5.4755845, 0.13526583, -0.0126901865)
+text = "Socket 4"
+font_size = 64
