@@ -14,6 +14,18 @@ const CABLE_SCENE: PackedScene = preload("res://scenes/props/cable.tscn")
 #desk's ViewPoint camera (its size), so you preview the exact framing in-editor
 @export var desk_transition_time: float = 0.9
 
+#power outage bits: the breaker prop, the red emergency light, and every
+#light that dims when the power dies. all assigned in room.tscn
+@export var breaker_box: BreakerBox
+@export var emergency_light: OmniLight3D
+@export var outage_lights: Array[Light3D] = []
+#how much of each light's energy survives an outage
+@export var outage_dim: float = 0.12
+@export var outage_fade_time: float = 0.5
+
+#fires once the breaker close-up glide has landed
+signal breaker_focused
+
 var _cam_offset: Vector3
 var _home_basis: Basis
 var _home_size: float
@@ -22,10 +34,17 @@ var _desk_mode: bool = false
 #true only once the fly-in has landed, so exit input works when the view is settled
 var _at_desk: bool = false
 var _cam_tween: Tween
+#breaker mode covers the trip to the breaker box and back, like desk mode
+var _breaker_mode: bool = false
+var _powered: bool = true
+#each outage light's normal energy, cached so set_power can restore it
+var _light_base: Dictionary = {}
+var _power_tween: Tween
 
 @onready var _player: Player = %Player
 @onready var _camera: Camera3D = %Camera
 @onready var _desk: Desk = %Desk
+@onready var _environment: WorldEnvironment = $WorldEnvironment
 
 func _ready() -> void:
 	#the camera is moved by hand in _process, so keep godot's automatic
@@ -35,6 +54,10 @@ func _ready() -> void:
 	_home_basis = _camera.global_transform.basis
 	_home_size = _camera.size
 	_desk.opened.connect(_on_desk_opened)
+	if breaker_box != null:
+		breaker_box.opened.connect(_on_breaker_opened)
+	for light: Light3D in outage_lights:
+		_light_base[light] = light.light_energy
 	for jack: Node in get_tree().get_nodes_in_group("jacks"):
 		if jack is Jack:
 			(jack as Jack).plug_grabbed.connect(_on_plug_grabbed)
@@ -46,6 +69,7 @@ func _ready() -> void:
 			(socket as Socket).unplug_requested.connect(_on_unplug_requested)
 		elif socket is Anchor:
 			(socket as Anchor).plug_seated.connect(_on_plug_seated)
+			(socket as Anchor).unplug_requested.connect(_on_unplug_requested)
 
 
 #glide toward the player's drawn position, not the physics tick, or it judders
@@ -55,6 +79,15 @@ func _process(delta: float) -> void:
 		#so reading the press here keeps it once per frame
 		if _at_desk and (Inputs.interact_pressed() or Inputs.cancel_pressed()):
 			_close_desk()
+		return
+	#a nervous flicker on the emergency light while the power is out,
+	#once the outage fade has finished writing to it
+	if not _powered and emergency_light != null \
+			and (_power_tween == null or not _power_tween.is_running()):
+		var t: float = Time.get_ticks_msec() / 1000.0
+		emergency_light.light_energy = 1.4 + sin(t * 13.0) * 0.2
+	#the breaker trip reads no input here — the power manager closes it
+	if _breaker_mode:
 		return
 	var target: Vector3 = _focus() + _cam_offset
 	var weight: float = 1.0 - exp(-camera_follow_speed * delta)
@@ -88,6 +121,47 @@ func _close_desk() -> void:
 		_desk_mode = false
 		_player.controls_enabled = true
 	)
+
+
+#fly the camera to the breaker box close-up, same glide as the desk.
+#no exit input here — the power manager calls close_breaker when done
+func _on_breaker_opened(box: BreakerBox) -> void:
+	_breaker_mode = true
+	_player.controls_enabled = false
+	var vp: Camera3D = box.view_point()
+	_start_cam_tween(vp.global_transform, vp.size)
+	_cam_tween.finished.connect(func() -> void: breaker_focused.emit())
+
+
+#pull back out from the breaker and hand control back once the glide lands
+func close_breaker() -> void:
+	_start_cam_tween(Transform3D(_home_basis, _focus() + _cam_offset), _home_size)
+	_cam_tween.finished.connect(func() -> void:
+		_breaker_mode = false
+		_player.controls_enabled = true
+	)
+
+
+#fade the room down to a dim red glow when the power dies, or bring it back.
+#jack lamps go dark too so nobody can read who's calling in the dark
+func set_power(on: bool) -> void:
+	_powered = on
+	if _power_tween != null:
+		_power_tween.kill()
+	_power_tween = create_tween().set_parallel()
+	for light: Light3D in outage_lights:
+		var energy: float = _light_base[light] if on else _light_base[light] * outage_dim
+		_power_tween.tween_property(light, "light_energy", energy, outage_fade_time)
+	var env: Environment = _environment.environment
+	if env != null:
+		_power_tween.tween_property(env, "ambient_light_energy", 1.0 if on else 0.25, outage_fade_time)
+	if emergency_light != null:
+		_power_tween.tween_property(emergency_light, "light_energy", 0.0 if on else 1.4, outage_fade_time)
+	for node: Node in get_tree().get_nodes_in_group("jacks"):
+		if node is Jack:
+			(node as Jack).set_powered(on)
+	if breaker_box != null:
+		breaker_box.set_tripped(not on)
 
 
 #one tween moves the camera pose and zoom together, killing any older one.
@@ -126,20 +200,17 @@ func _on_plug_seated(socket: Node) -> void:
 	socket.flash()
 
 
-#free hands on an occupied socket: pull the whole line out, walking the
-#cable chain back through any anchors until the jack lights up again
-func _on_unplug_requested(socket: Socket) -> void:
-	var cable: Cable = socket.incoming_cable
-	socket.reset()
-	while cable != null:
-		var origin: Node3D = cable.origin_node
-		cable.queue_free()
-		cable = null
-		if origin is Anchor:
-			cable = (origin as Anchor).incoming_cable
-			(origin as Anchor).reset()
-		elif origin is Jack:
-			(origin as Jack).reset_waiting()
+#free hands on an occupied socket or anchor: pop just that plug back into
+#the player's hands, so the line can move to another socket without a
+#walk back to the jack. the rest of the chain stays put.
+func _on_unplug_requested(node: Node) -> void:
+	var cable: Cable = node.incoming_cable
+	if cable == null or _player.carried_cable != null:
+		return
+	node.reset()
+	cable.seat_node = null
+	cable.unseat_to(_player.carry_point())
+	_player.carried_cable = cable
 
 #this section is used to gather the solution from the sockets/endpoints
 var solution : Array[String] = []
@@ -166,9 +237,10 @@ func player() -> Player:
 	return _player
 
 
-#the pause menu asks this so esc at the desk closes the desk, not the game
+#the pause menu asks this so esc at the desk closes the desk, not the game.
+#the breaker close-up counts too — the minigame owns esc there
 func at_desk() -> bool:
-	return _desk_mode
+	return _desk_mode or _breaker_mode
 
 
 #a slow electric flash at the last crossing, so it's still fading
@@ -178,6 +250,9 @@ func flash_spark() -> void:
 		return
 	spark.global_position = last_crossing + Vector3(0.0, 0.25, 0.0)
 	spark.visible = true
+	var burst: CPUParticles3D = spark.get_node_or_null("Burst") as CPUParticles3D
+	if burst != null:
+		burst.restart()
 	var light: OmniLight3D = spark.get_node("Light") as OmniLight3D
 	if light != null:
 		light.light_energy = 4.0

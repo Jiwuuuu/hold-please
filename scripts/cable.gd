@@ -54,6 +54,17 @@ func setup(anchor: Node3D, follow: Node3D) -> void:
 #retarget the loose end onto a socket, with a little plug punch on the way in
 func seat_to(snap: Node3D) -> void:
 	_follow = snap
+	_punch_plug()
+
+
+#pull the plug back out of a socket into a carrier's hands, same punch
+func unseat_to(follow: Node3D) -> void:
+	_follow = follow
+	_punch_plug()
+
+
+#quick scale pop on the plug so seating and unseating both feel snappy
+func _punch_plug() -> void:
 	_plug.scale = Vector3.ONE * 1.6
 	var tween: Tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_plug, "scale", Vector3.ONE, 0.18)

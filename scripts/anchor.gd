@@ -10,6 +10,8 @@ extends StaticBody3D
 #it must have two signals: one for taking the wire, one for returning it
 signal plug_grabbed(anchor: Anchor)
 signal plug_seated(anchor: Anchor)
+#and one for popping the seated plug back out into the player's hands
+signal unplug_requested(anchor: Anchor)
 
 #I shamelessly took these from the jack
 const LAMP_LIT: Color = Color(1.0, 0.72, 0.2)
@@ -46,11 +48,14 @@ func snap_point() -> Node3D:
 
 
 func interact(player: Player) -> void:
-	#carrying the anchor's own outgoing cable back to it puts the plug back
+	#carrying the anchor's own outgoing cable back to it puts that plug back,
+	#and the seated incoming plug pops out into the player's hands so the
+	#whole joint frees up in one press
 	if cable_out and player.is_carrying() and player.carried_cable.origin_node == self:
 		player.carried_cable.queue_free()
 		player.carried_cable = null
 		cable_out = false
+		unplug_requested.emit(self)
 	#if player is carrying, we want the anchor to act as a socket
 	elif status == anchor_status.nocable and player.is_carrying():
 		status = anchor_status.yescable

@@ -19,6 +19,10 @@ const LAMP_OFF: Color = Color(0.25, 0.18, 0.1)
 
 var cable_out: bool = false
 
+#false while the exchange power is out — the lamp goes dark but the
+#waiting state stays, so the caller is still there when the lights return
+var powered: bool = true
+
 @onready var _lamp: MeshInstance3D = %Lamp
 @onready var _body: Sprite3D = %Body
 @onready var _cable_anchor: Marker3D = %CableAnchor
@@ -32,7 +36,7 @@ func _ready() -> void:
 
 #while a caller waits, the lamp breathes so it reads as ringing
 func _process(_delta: float) -> void:
-	if not lit:
+	if not lit or not powered:
 		return
 	var mat: StandardMaterial3D = _lamp.material_override as StandardMaterial3D
 	if mat == null:
@@ -48,6 +52,18 @@ func set_lit(value: bool) -> void:
 	var mat: StandardMaterial3D = _lamp.material_override as StandardMaterial3D
 	if mat != null:
 		mat.albedo_color = LAMP_LIT if lit else LAMP_OFF
+
+
+#the power manager flips this during outages. plugging still works in
+#the dark, only the lamp reading goes away
+func set_powered(p: bool) -> void:
+	powered = p
+	if powered:
+		set_lit(lit)
+	else:
+		var mat: StandardMaterial3D = _lamp.material_override as StandardMaterial3D
+		if mat != null:
+			mat.albedo_color = LAMP_OFF
 
 
 #where the cable stays pinned

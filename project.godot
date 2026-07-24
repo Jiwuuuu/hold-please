@@ -17,12 +17,17 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 [autoload]
 
 Settings="*res://scripts/settings_store.gd"
+TransitionScreen="*res://scenes/ui/transition_screen.tscn"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[gui]
+
+theme/custom="res://assets/ui/main_theme.tres"
 
 [input]
 

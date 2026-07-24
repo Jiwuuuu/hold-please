@@ -49,4 +49,5 @@ func _resume() -> void:
 
 func _quit_to_menu() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	hide()
+	TransitionScreen.change_scene("res://scenes/main_menu.tscn")

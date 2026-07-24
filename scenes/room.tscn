@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://pga508y4r6ut" path="res://assets/sprites/socket1L6.png" id="12_pt2"]
 [ext_resource type="Texture2D" uid="uid://ielqogy5g3g3" path="res://assets/sprites/socket1L7.png" id="13_pt3"]
 [ext_resource type="Texture2D" uid="uid://djww3k0rksjxs" path="res://assets/sprites/socket1L8.png" id="14_pt4"]
+[ext_resource type="PackedScene" path="res://scenes/props/breaker_box.tscn" id="15_breaker"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -108,6 +109,17 @@ size = Vector3(12.666845, 0.04, 9.113256)
 shading_mode = 0
 albedo_color = Color(1, 0.95, 0.6, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sparkburst"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.75, 0.9, 1, 0.9)
+billboard_mode = 3
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_sparkburst"]
+material = SubResource("StandardMaterial3D_sparkburst")
+size = Vector2(0.07, 0.07)
+
 [sub_resource type="SphereMesh" id="SphereMesh_spark"]
 material = SubResource("StandardMaterial3D_spark")
 radius = 0.09
@@ -198,13 +210,16 @@ size = Vector3(0.6, 1, 0.6)
 material = SubResource("StandardMaterial3D_skirt")
 size = Vector3(0.3, 0.07, 9)
 
-[node name="Room" type="Node3D" unique_id=212477981 node_paths=PackedStringArray("socket_name_labels", "spark", "dossier_body", "task_body", "big_button")]
+[node name="Room" type="Node3D" unique_id=212477981 node_paths=PackedStringArray("socket_name_labels", "spark", "dossier_body", "task_body", "big_button", "breaker_box", "emergency_light", "outage_lights")]
 script = ExtResource("1_room")
 socket_name_labels = [NodePath("SocketName1"), NodePath("SocketName2"), NodePath("SocketName3"), NodePath("SocketName4")]
 spark = NodePath("Spark")
 dossier_body = NodePath("Desk/Papers/DossierBody")
 task_body = NodePath("Desk/Papers/TaskBody")
 big_button = NodePath("Desk/BigButton")
+breaker_box = NodePath("BreakerBox")
+emergency_light = NodePath("EmergencyLight")
+outage_lights = [NodePath("DirectionalLight3D"), NodePath("DeadSideLight"), NodePath("LivingSideLight"), NodePath("Window1/MoonLight"), NodePath("Window2/MoonLight"), NodePath("Desk/DeskLamp/LampLight")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=276778026]
 environment = SubResource("Environment_room")
@@ -506,6 +521,22 @@ omni_range = 3.5
 [node name="Ball" type="MeshInstance3D" parent="Spark" unique_id=1237239564]
 mesh = SubResource("SphereMesh_spark")
 
+[node name="Burst" type="CPUParticles3D" parent="Spark"]
+emitting = false
+amount = 16
+lifetime = 0.45
+one_shot = true
+explosiveness = 1.0
+randomness = 0.3
+mesh = SubResource("QuadMesh_sparkburst")
+direction = Vector3(0, 1, 0)
+spread = 85.0
+gravity = Vector3(0, -7, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.4
+scale_amount_min = 0.5
+scale_amount_max = 1.3
+
 [node name="Window1" type="Node3D" parent="." unique_id=62265802]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 1.5, -5.52)
 
@@ -652,3 +683,12 @@ mesh = SubResource("BoxMesh_tray")
 [node name="CableTrayRight" type="MeshInstance3D" parent="." unique_id=578108398]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.35, 0.035, -1)
 mesh = SubResource("BoxMesh_tray")
+
+[node name="BreakerBox" parent="." instance=ExtResource("15_breaker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6, 0, -5.58)
+
+[node name="EmergencyLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6, 2.2, -4.6)
+light_color = Color(1, 0.25, 0.2, 1)
+light_energy = 0.0
+omni_range = 8.0

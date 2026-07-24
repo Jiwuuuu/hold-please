@@ -13,6 +13,8 @@
 [ext_resource type="Script" path="res://scripts/screen_fx.gd" id="11_fx"]
 [ext_resource type="Shader" path="res://assets/shaders/crt.gdshader" id="12_crt"]
 [ext_resource type="Shader" path="res://assets/shaders/glitch.gdshader" id="13_glitch"]
+[ext_resource type="Script" path="res://scripts/power_manager.gd" id="14_power"]
+[ext_resource type="PackedScene" path="res://scenes/ui/tuning_minigame.tscn" id="15_tuning"]
 
 [sub_resource type="Environment" id="Environment_room"]
 background_mode = 1
@@ -23,9 +25,24 @@ ambient_light_color = Color(0.72, 0.7, 0.78, 1)
 [sub_resource type="World3D" id="World3D_shared"]
 environment = SubResource("Environment_room")
 
-[sub_resource type="Theme" id="Theme_ajtct"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper"]
+bg_color = Color(0.85, 0.8, 0.68, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.24, 0.19, 0.16, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loq3h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_folder_tab"]
+bg_color = Color(0.55, 0.42, 0.28, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dark"]
 bg_color = Color(0.07123137, 0.0712314, 0.07123133, 1)
@@ -174,19 +191,61 @@ horizontal_alignment = 1
 
 [node name="DossierPanel" type="Panel" parent="."]
 visible = false
-offset_right = 1271.0
-offset_bottom = 717.0
-theme = SubResource("Theme_ajtct")
-theme_override_styles/panel = SubResource("StyleBoxFlat_loq3h")
+offset_left = 140.0
+offset_top = 60.0
+offset_right = 1140.0
+offset_bottom = 700.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
+
+[node name="Tab" type="Panel" parent="DossierPanel"]
+offset_left = 24.0
+offset_top = -34.0
+offset_right = 240.0
+offset_bottom = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_folder_tab")
+
+[node name="TabLabel" type="Label" parent="DossierPanel/Tab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.72, 1)
+theme_override_font_sizes/font_size = 20
+text = "CASE FILES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stamp" type="Label" parent="DossierPanel"]
+offset_left = 620.0
+offset_top = 52.0
+offset_right = 980.0
+offset_bottom = 90.0
+rotation = -0.21
+theme_override_colors/font_color = Color(0.7, 0.2, 0.2, 0.55)
+theme_override_font_sizes/font_size = 24
+text = "AFTERLIFE EXCHANGE — CLASSIFIED"
+
+[node name="PageIndicator" type="Label" parent="DossierPanel"]
+offset_left = 380.0
+offset_top = 574.0
+offset_right = 620.0
+offset_bottom = 610.0
+theme_override_colors/font_color = Color(0.35, 0.27, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+text = "page 1 / 10"
+horizontal_alignment = 1
 
 [node name="Page0" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Annabeth
 •	Age of Death: A lady never tells.
 •	Cause of Death: Heart failure.
@@ -197,11 +256,12 @@ text = "Annabeth
 [node name="Page1" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Bryan
 •	Age of Death: 52
 •	Cause of Death: Severe alcohol poisoning.
@@ -213,11 +273,12 @@ text = "Bryan
 [node name="Page2" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Charles
 •	Age of Death: 81
 •	Cause of Death: Severe concussion
@@ -228,11 +289,12 @@ text = "Charles
 [node name="Page3" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Dafne
 •	Age of Death: 47
 •	Cause of Death: Freak accident, a tragedy
@@ -243,11 +305,12 @@ text = "Dafne
 [node name="Page4" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Erica
 •	Age of Death: 90
 •	Cause of Death: Old age, dear
@@ -258,11 +321,12 @@ text = "Erica
 [node name="Page5" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Franklyn
 •	Age of Death: 40
 •	Cause of Death: Electrocution
@@ -273,11 +337,12 @@ text = "Franklyn
 [node name="Page6" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Gordon
 •	Age of Death: 27
 •	Cause of Death: Didn’t see the car
@@ -288,11 +353,12 @@ text = "Gordon
 [node name="Page7" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Henri
 •	Age of Death: 65
 •	Cause of Death: Lycanthropy
@@ -303,11 +369,12 @@ text = "Henri
 [node name="Page8" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Irene
 •	Age of Death: 75
 •	Cause of Death: Cancer
@@ -318,11 +385,12 @@ text = "Irene
 [node name="Page9" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
 visible = false
 layout_mode = 0
-offset_left = 96.0
-offset_top = 74.0
-offset_right = 1131.0
-offset_bottom = 608.0
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 60.0
+offset_top = 70.0
+offset_right = 940.0
+offset_bottom = 520.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 32
 text = "Kevin
 •	Age of Death: 78
 •	Cause of Death: Old age
@@ -332,56 +400,78 @@ text = "Kevin
 
 [node name="ByeButton" type="Button" parent="DossierPanel"]
 layout_mode = 0
-offset_left = 65.0
-offset_top = 617.0
-offset_right = 284.0
-offset_bottom = 682.0
-theme_override_font_sizes/font_size = 32
+offset_left = 40.0
+offset_top = 560.0
+offset_right = 220.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 26
 text = "Go Back"
 
 [node name="ForwardButton" type="Button" parent="DossierPanel"]
 layout_mode = 0
-offset_left = 1140.0
-offset_top = 638.0
-offset_right = 1201.0
-offset_bottom = 701.0
-theme_override_font_sizes/font_size = 32
+offset_left = 930.0
+offset_top = 556.0
+offset_right = 990.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 26
 text = ">>"
 
 [node name="BackButton" type="Button" parent="DossierPanel"]
 layout_mode = 0
-offset_left = 1065.0
-offset_top = 638.0
-offset_right = 1126.0
-offset_bottom = 701.0
-theme_override_font_sizes/font_size = 32
+offset_left = 855.0
+offset_top = 556.0
+offset_right = 915.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 26
 text = "<<"
 
 [node name="TaskPanel" type="Panel" parent="."]
 visible = false
-offset_right = 1271.0
-offset_bottom = 717.0
-theme = SubResource("Theme_ajtct")
-theme_override_styles/panel = SubResource("StyleBoxFlat_loq3h")
+offset_left = 140.0
+offset_top = 60.0
+offset_right = 1140.0
+offset_bottom = 700.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
+
+[node name="Tab" type="Panel" parent="TaskPanel"]
+offset_left = 24.0
+offset_top = -34.0
+offset_right = 240.0
+offset_bottom = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_folder_tab")
+
+[node name="TabLabel" type="Label" parent="TaskPanel/Tab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.72, 1)
+theme_override_font_sizes/font_size = 20
+text = "TONIGHT'S ORDERS"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="TaskPanel"]
 layout_mode = 0
-offset_left = 151.0
-offset_top = 46.0
-offset_right = 1124.0
-offset_bottom = 563.0
-theme_override_font_sizes/normal_font_size = 28
+offset_left = 60.0
+offset_top = 50.0
+offset_right = 940.0
+offset_bottom = 530.0
+theme_override_colors/default_color = Color(0.2, 0.15, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 26
 bbcode_enabled = true
 text = "the task text is set per night by the puzzle manager"
 custom_effects = [SubResource("Resource_garble")]
 
 [node name="ByeButton" type="Button" parent="TaskPanel"]
 layout_mode = 0
-offset_left = 65.0
-offset_top = 617.0
-offset_right = 284.0
-offset_bottom = 682.0
-theme_override_font_sizes/font_size = 32
+offset_left = 40.0
+offset_top = 560.0
+offset_right = 220.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 26
 text = "Go Back"
 
 [node name="TransitionPanel" type="Panel" parent="."]
@@ -460,7 +550,24 @@ offset_bottom = 675.0
 theme_override_font_sizes/font_size = 32
 text = "Clock Out"
 
-[node name="PuzzleManager" type="Node" parent="." node_paths=PackedStringArray("room", "tr_manager", "task_label", "hud_label", "carry_label", "feedback_panel", "feedback_label", "feedback_button", "ending_panel", "screen_fx")]
+[node name="OutageBanner" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -420.0
+offset_top = 96.0
+offset_right = 420.0
+offset_bottom = 132.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.2, 1)
+theme_override_font_sizes/font_size = 26
+text = "POWER FAILURE — RESET THE BREAKER"
+horizontal_alignment = 1
+
+[node name="TuningMinigame" parent="." instance=ExtResource("15_tuning")]
+
+[node name="PuzzleManager" type="Node" parent="." node_paths=PackedStringArray("room", "tr_manager", "task_label", "hud_label", "carry_label", "feedback_panel", "feedback_label", "feedback_button", "ending_panel", "screen_fx", "power_manager")]
 script = ExtResource("4_jyhfs")
 room = NodePath("../Container/WorldViewport/Room")
 tr_manager = NodePath("../TransitionManager")
@@ -474,6 +581,14 @@ feedback_label = NodePath("../FeedbackPanel/FeedbackLabel")
 feedback_button = NodePath("../FeedbackPanel/FeedbackButton")
 ending_panel = NodePath("../EndingPanel")
 screen_fx = NodePath("../ScreenFX")
+power_manager = NodePath("../PowerManager")
+
+[node name="PowerManager" type="Node" parent="." node_paths=PackedStringArray("room", "minigame", "outage_banner", "blocking_panels")]
+script = ExtResource("14_power")
+room = NodePath("../Container/WorldViewport/Room")
+minigame = NodePath("../TuningMinigame")
+outage_banner = NodePath("../OutageBanner")
+blocking_panels = [NodePath("../TransitionPanel"), NodePath("../FeedbackPanel"), NodePath("../EndingPanel"), NodePath("../DossierPanel"), NodePath("../TaskPanel")]
 
 [node name="TransitionManager" type="Node" parent="." node_paths=PackedStringArray("tr_panel", "tr_label", "tr_button")]
 script = ExtResource("8_trman")
@@ -481,9 +596,10 @@ tr_panel = NodePath("../TransitionPanel")
 tr_label = NodePath("../TransitionPanel/DialogueLabel")
 tr_button = NodePath("../TransitionPanel/Button")
 
-[node name="DossierManager" type="Node" parent="." node_paths=PackedStringArray("dossier_panel")]
+[node name="DossierManager" type="Node" parent="." node_paths=PackedStringArray("dossier_panel", "page_indicator")]
 script = ExtResource("5_tbgi4")
 dossier_panel = NodePath("../DossierPanel")
+page_indicator = NodePath("../DossierPanel/PageIndicator")
 
 [node name="TaskManager" type="Node" parent="." node_paths=PackedStringArray("panel")]
 script = ExtResource("6_tefeu")

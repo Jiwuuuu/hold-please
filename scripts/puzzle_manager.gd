@@ -22,6 +22,7 @@ extends Node
 @export var feedback_button : Button
 @export var ending_panel : Panel
 @export var screen_fx : Node
+@export var power_manager : Node
 
 var index : int = 0
 var strikes : int = 0
@@ -57,6 +58,8 @@ func _apply_puzzle() -> void:
 	room.set_listening(current_puzzle().listening)
 	task_label.text = current_puzzle().task_text
 	_update_hud()
+	if power_manager != null:
+		power_manager.on_night_started(index)
 
 
 func _update_hud() -> void:
@@ -172,13 +175,18 @@ func _on_transition_advanced() -> void:
 
 
 func _on_ending_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	TransitionScreen.change_scene("res://scenes/main_menu.tscn")
 
 
 func _on_room_big_button_signal() -> void:
 	#clicks reach the desk even under an open panel, so ignore them there —
 	#otherwise closing a panel could re-press the button and burn a strike
 	if feedback_panel.visible or ending_panel.visible or tr_manager.tr_panel.visible:
+		return
+	#no verifying in the dark — the board is dead until the breaker is fixed
+	if power_manager != null and not power_manager.powered:
+		if screen_fx != null:
+			screen_fx.glitch_burst(0.25)
 		return
 	do_solution()
 

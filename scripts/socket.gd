@@ -25,6 +25,7 @@ var _base_message: String
 
 @onready var _body: Sprite3D = %Body
 @onready var _snap_point: Marker3D = %SnapPoint
+@onready var _seat_sparks: CPUParticles3D = %SeatSparks
 
 
 func _ready() -> void:
@@ -54,8 +55,10 @@ func reset() -> void:
 	message = _base_message
 
 
-#quick green blink when a call connects
+#quick green blink and a spark puff when a call connects
 func flash() -> void:
 	_body.modulate = FLASH_COLOR
 	var tween: Tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_body, "modulate", _base_color, 0.35)
+	if _seat_sparks != null:
+		_seat_sparks.restart()

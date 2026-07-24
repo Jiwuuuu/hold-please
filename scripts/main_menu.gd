@@ -9,6 +9,10 @@ extends Node
 #hold before a screen fades in, so the camera lands before you read it
 @export var reveal_delay: float = 0.55
 @export var reveal_time: float = 0.25
+#how far the camera breathes around its shot while idle
+@export var sway_amount: float = 0.05
+#gap between each home element fading in on boot
+@export var intro_stagger: float = 0.08
 
 @onready var _container: SubViewportContainer = %Container
 @onready var _camera: Camera3D = %MenuCamera
@@ -74,6 +78,44 @@ func _ready() -> void:
 		%QuitButton.hide()
 
 	_init_settings_controls()
+	_play_intro()
+	_setup_button_hover()
+
+
+#the home screen fades in piece by piece on boot
+func _play_intro() -> void:
+	var intro_nodes: Array[Control] = [%TitleLabel, %Tagline]
+	for child: Node in %Buttons.get_children():
+		if child is Control:
+			intro_nodes.append(child)
+	var intro: Tween = create_tween()
+	for i: int in intro_nodes.size():
+		var node: Control = intro_nodes[i]
+		node.modulate.a = 0.0
+		intro.parallel().tween_property(node, "modulate:a", 1.0, 0.25).set_delay(intro_stagger * i)
+
+
+#a small grow on hover so the buttons feel alive
+func _setup_button_hover() -> void:
+	for child: Node in %Buttons.get_children():
+		if child is Button:
+			var button: Button = child
+			button.mouse_entered.connect(_on_button_hover.bind(button, true))
+			button.mouse_exited.connect(_on_button_hover.bind(button, false))
+
+
+func _on_button_hover(button: Button, over: bool) -> void:
+	button.pivot_offset = button.size / 2.0
+	var t: Tween = button.create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	t.tween_property(button, "scale", Vector2.ONE * (1.04 if over else 1.0), 0.08)
+
+
+#a slow breathing drift on the camera. offsets compose with the glides,
+#which only tween the transform and size, so there's never a pop
+func _process(_delta: float) -> void:
+	var t: float = Time.get_ticks_msec() / 1000.0
+	_camera.h_offset = sin(t * 0.31) * sway_amount
+	_camera.v_offset = cos(t * 0.23) * sway_amount * 0.6
 
 
 #esc backs out of a screen to the home shot
@@ -147,12 +189,12 @@ func _on_start() -> void:
 
 func _begin_new_shift() -> void:
 	Settings.clear_night()
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	TransitionScreen.change_scene("res://scenes/game.tscn")
 
 
 #pick the shift back up on the saved night
 func _on_continue() -> void:
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	TransitionScreen.change_scene("res://scenes/game.tscn")
 
 
 func _on_quit() -> void:

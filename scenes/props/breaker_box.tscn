@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/breaker_box.gd" id="1_breaker"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_breaker"]
+size = Vector3(0.9, 1.6, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cabinet"]
+albedo_color = Color(0.33, 0.36, 0.33, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = SubResource("StandardMaterial3D_cabinet")
+size = Vector3(0.7, 0.9, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_door"]
+albedo_color = Color(0.24, 0.19, 0.16, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_door"]
+material = SubResource("StandardMaterial3D_door")
+size = Vector3(0.6, 0.78, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lever"]
+material = SubResource("StandardMaterial3D_door")
+size = Vector3(0.08, 0.26, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_statuslamp"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_color = Color(0.3, 0.8, 0.4, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_statuslamp"]
+size = Vector3(0.14, 0.14, 0.14)
+
+[node name="BreakerBox" type="StaticBody3D" groups=["interactable"]]
+script = ExtResource("1_breaker")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0.1)
+shape = SubResource("BoxShape3D_breaker")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0.08)
+mesh = SubResource("BoxMesh_body")
+
+[node name="Door" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0.16)
+mesh = SubResource("BoxMesh_door")
+
+[node name="Lever" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0.2)
+mesh = SubResource("BoxMesh_lever")
+
+[node name="StatusLamp" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.92, 0.08)
+material_override = SubResource("StandardMaterial3D_statuslamp")
+mesh = SubResource("BoxMesh_statuslamp")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0.1)
+layers = 2
+billboard = 1
+text = "BREAKER"
+font_size = 44
+
+[node name="ViewPoint" type="Camera3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 2.6)
+cull_mask = 1048573
+projection = 1
+size = 2.4

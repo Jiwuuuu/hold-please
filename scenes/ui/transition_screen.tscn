@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/transition_screen.gd" id="1_transition"]
+[ext_resource type="Shader" path="res://assets/shaders/tv_off.gdshader" id="2_tvoff"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tvoff"]
+shader = ExtResource("2_tvoff")
+shader_parameter/progress = 0.0
+
+[node name="TransitionScreen" type="CanvasLayer"]
+layer = 100
+process_mode = 3
+script = ExtResource("1_transition")
+
+[node name="Rect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_tvoff")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
