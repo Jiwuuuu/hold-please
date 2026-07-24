@@ -16,6 +16,8 @@ var night: int = -1
 func _ready() -> void:
 	_load()
 	_apply_all()
+	#opt into wavedash platform features. safe no-op off the web.
+	WavedashSDK.init({})
 
 
 func set_master(v: float) -> void:

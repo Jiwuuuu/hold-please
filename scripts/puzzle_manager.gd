@@ -31,6 +31,8 @@ var fails : int = 0
 var failed_shift : bool = false
 #true while the prologue card is up, so its button doesn't skip night 1
 var _prologue_open : bool = false
+#running count of wrong verifies this session, pushed to wavedash as a stat
+var _mistakes_total : int = 0
 
 
 func _ready() -> void:
@@ -106,6 +108,8 @@ func do_solution() -> void:
 func _handle_mistake(report: Dictionary) -> void:
 	strikes -= 1
 	fails += 1
+	_mistakes_total += 1
+	WavedashSDK.set_stat_int("mistakes", _mistakes_total, true)
 	_update_hud()
 	if screen_fx != null:
 		screen_fx.glitch_burst()
@@ -163,11 +167,18 @@ func _on_transition_advanced() -> void:
 	if _prologue_open:
 		_prologue_open = false
 		return
+	#the night we just cleared is the current index, before we roll forward
+	if index == 0:
+		WavedashSDK.set_achievement("first_night", true)
+	if fails == 0:
+		WavedashSDK.set_achievement("flawless_night", true)
 	if screen_fx != null:
 		screen_fx.glitch_burst(0.4)
 	index += 1
+	WavedashSDK.set_stat_int("nights_completed", index, true)
 	if index >= puzzles.size():
 		Settings.clear_night()
+		WavedashSDK.set_achievement("shift_complete", true)
 		ending_panel.visible = true
 	else:
 		Settings.set_night(index)

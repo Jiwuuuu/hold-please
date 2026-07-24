@@ -1,0 +1,5 @@
+game_id = "j979n1z4a4g5qzyr0vmpr98gh98b5947"
+upload_dir = "./exports/web"
+
+[godot]
+version = "4.7-stable"

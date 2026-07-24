@@ -16,6 +16,7 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [autoload]
 
+WavedashSDK="*res://addons/wavedash/WavedashSDK.gd"
 Settings="*res://scripts/settings_store.gd"
 TransitionScreen="*res://scenes/ui/transition_screen.tscn"
 
