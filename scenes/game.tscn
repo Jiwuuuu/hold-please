@@ -6,14 +6,14 @@
 [ext_resource type="Script" uid="uid://b4oqi8npynm0a" path="res://scripts/puzzle_manager.gd" id="4_jyhfs"]
 [ext_resource type="Script" uid="uid://ftnbloup1kga" path="res://scripts/dossier_manager.gd" id="5_tbgi4"]
 [ext_resource type="Script" uid="uid://dn0nv5wpbi5o2" path="res://scripts/task_manager.gd" id="6_tefeu"]
-[ext_resource type="Script" path="res://scripts/puzzle_def.gd" id="7_pdef"]
-[ext_resource type="Script" path="res://scripts/transitions/transition_manager.gd" id="8_trman"]
-[ext_resource type="Script" path="res://scripts/garble_text.gd" id="9_garble"]
+[ext_resource type="Script" uid="uid://nnaety6pv5ar" path="res://scripts/puzzle_def.gd" id="7_pdef"]
+[ext_resource type="Script" uid="uid://x3171je2rfgl" path="res://scripts/transitions/transition_manager.gd" id="8_trman"]
+[ext_resource type="Script" uid="uid://cwegm2xck2x5w" path="res://scripts/garble_text.gd" id="9_garble"]
 [ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="10_pause"]
-[ext_resource type="Script" path="res://scripts/screen_fx.gd" id="11_fx"]
-[ext_resource type="Shader" path="res://assets/shaders/crt.gdshader" id="12_crt"]
-[ext_resource type="Shader" path="res://assets/shaders/glitch.gdshader" id="13_glitch"]
-[ext_resource type="Script" path="res://scripts/power_manager.gd" id="14_power"]
+[ext_resource type="Script" uid="uid://clu28d5jro4rh" path="res://scripts/screen_fx.gd" id="11_fx"]
+[ext_resource type="Shader" uid="uid://b1nhnv2d81kf7" path="res://assets/shaders/crt.gdshader" id="12_crt"]
+[ext_resource type="Shader" uid="uid://cgii4uboc03er" path="res://assets/shaders/glitch.gdshader" id="13_glitch"]
+[ext_resource type="Script" uid="uid://d2beg1elg0xaj" path="res://scripts/power_manager.gd" id="14_power"]
 [ext_resource type="PackedScene" path="res://scenes/ui/tuning_minigame.tscn" id="15_tuning"]
 
 [sub_resource type="Environment" id="Environment_room"]
@@ -44,26 +44,11 @@ bg_color = Color(0.55, 0.42, 0.28, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dark"]
-bg_color = Color(0.07123137, 0.0712314, 0.07123133, 1)
-
 [sub_resource type="RichTextEffect" id="Resource_garble"]
 script = ExtResource("9_garble")
-flicker_threshold = 0.965
-shake_pixels = 1.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
-shader = ExtResource("12_crt")
-shader_parameter/scanlines_count = 2.1
-shader_parameter/scanlines_intensity = 0.12
-shader_parameter/color_offset = 1.5
-shader_parameter/blur = 0.2
-shader_parameter/warp_amount = Vector2(0.045, 0.06)
-shader_parameter/vignette_strength = 0.35
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]
-shader = ExtResource("13_glitch")
-shader_parameter/intensity = 0.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dark"]
+bg_color = Color(0.07123137, 0.0712314, 0.07123133, 1)
 
 [sub_resource type="Resource" id="Resource_puzzle1"]
 script = ExtResource("7_pdef")
@@ -74,7 +59,6 @@ Listening tonight:   1 Irene    2 Charles    3 Annabeth    4 Dafne
 Caller 1: [garble]“I want to reach my late mother. I miss her most around Christmas.”[/garble]
 
 [i]Grab the ringing jack's plug, carry it to the right listener's socket, then press the big button.[/i]"
-callers = 1
 listening = Array[String](["Irene", "Charles", "Annabeth", "Dafne"])
 caller_lines = Array[String](["seeking a late mother, missed most at Christmas"])
 solution = Array[String](["DD01", "XXXX", "XXXX", "XXXX"])
@@ -117,10 +101,34 @@ solution = Array[String](["CC01", "DD02", "AA03", "BB04"])
 vignette_rows = Array[String](["A rock concert, uh?", "Well, you were quite the rock-star, once upon a time…", "Surely, you jest, I can hardly remember having an audience of more than ten!", "Still, you taught half those kids. Or their parents.", "Was I so old?", "And wise!"])
 hints = Array[String](["A sudden, tragic loss, still raw — which listener never saw the car coming?", "A rock concert in their honour — rock isn’t quite their thing, but who loved music of every kind?", "The team’s quarterback — which listener loved football?", "A careful collector of old vinyls — which listener adored Verdi?"])
 
-[node name="Main" type="Node"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("12_crt")
+shader_parameter/scanline_color = Color(0, 0, 0, 1)
+shader_parameter/flicker_color = Color(0, 0, 0, 1)
+shader_parameter/scanlines_count = 2.1
+shader_parameter/scanlines_intensity = 0.12
+shader_parameter/flicker_speed = 30.0
+shader_parameter/flicker_intensity = 0.015
+shader_parameter/color_offset = 1.5
+shader_parameter/blur = 0.2
+shader_parameter/warp_amount = Vector2(0.045, 0.06)
+shader_parameter/vignette_strength = 0.35
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]
+shader = ExtResource("13_glitch")
+shader_parameter/intensity = 0.0
+shader_parameter/glitch_frequency = 2.0
+shader_parameter/red_displacement = 0.02
+shader_parameter/green_displacement = 0.02
+shader_parameter/blue_displacement = 0.02
+shader_parameter/scanline_intensity = 0.3
+shader_parameter/noise_intensity = 0.2
+shader_parameter/slice_intensity = 0.4
+
+[node name="Main" type="Node" unique_id=327162496]
 script = ExtResource("1_main")
 
-[node name="Container" type="SubViewportContainer" parent="."]
+[node name="Container" type="SubViewportContainer" parent="." unique_id=2003009246]
 unique_name_in_owner = true
 texture_filter = 1
 anchors_preset = 15
@@ -132,7 +140,7 @@ mouse_filter = 0
 stretch = true
 stretch_shrink = 3
 
-[node name="WorldViewport" type="SubViewport" parent="Container"]
+[node name="WorldViewport" type="SubViewport" parent="Container" unique_id=46355921]
 unique_name_in_owner = true
 world_3d = SubResource("World3D_shared")
 handle_input_locally = false
@@ -140,9 +148,9 @@ audio_listener_enable_3d = true
 size = Vector2i(426, 240)
 render_target_update_mode = 4
 
-[node name="Room" parent="Container/WorldViewport" instance=ExtResource("2_room")]
+[node name="Room" parent="Container/WorldViewport" unique_id=140433083 instance=ExtResource("2_room")]
 
-[node name="PlayerContainer" type="SubViewportContainer" parent="."]
+[node name="PlayerContainer" type="SubViewportContainer" parent="." unique_id=1361920842]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -151,7 +159,7 @@ grow_vertical = 2
 mouse_filter = 2
 stretch = true
 
-[node name="PlayerViewport" type="SubViewport" parent="PlayerContainer"]
+[node name="PlayerViewport" type="SubViewport" parent="PlayerContainer" unique_id=1368744593]
 unique_name_in_owner = true
 world_3d = SubResource("World3D_shared")
 transparent_bg = true
@@ -159,14 +167,14 @@ handle_input_locally = false
 size = Vector2i(1280, 720)
 render_target_update_mode = 4
 
-[node name="PlayerCamera" type="Camera3D" parent="PlayerContainer/PlayerViewport"]
+[node name="PlayerCamera" type="Camera3D" parent="PlayerContainer/PlayerViewport" unique_id=297899887]
 cull_mask = 2
 projection = 1
 current = true
 size = 7.0
 script = ExtResource("3_pcam")
 
-[node name="HudLabel" type="Label" parent="."]
+[node name="HudLabel" type="Label" parent="." unique_id=1125041703]
 offset_left = 16.0
 offset_top = 10.0
 offset_right = 720.0
@@ -174,7 +182,7 @@ offset_bottom = 42.0
 theme_override_font_sizes/font_size = 22
 text = "Night 1   —   strikes left: 3"
 
-[node name="CarryLabel" type="Label" parent="."]
+[node name="CarryLabel" type="Label" parent="." unique_id=1105459824]
 visible = false
 anchors_preset = 5
 anchor_left = 0.5
@@ -189,7 +197,7 @@ theme_override_font_sizes/font_size = 24
 text = "Caller 1 — “seeking a late mother”"
 horizontal_alignment = 1
 
-[node name="DossierPanel" type="Panel" parent="."]
+[node name="DossierPanel" type="Panel" parent="." unique_id=236111922]
 visible = false
 offset_left = 140.0
 offset_top = 60.0
@@ -197,14 +205,15 @@ offset_right = 1140.0
 offset_bottom = 700.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
 
-[node name="Tab" type="Panel" parent="DossierPanel"]
+[node name="Tab" type="Panel" parent="DossierPanel" unique_id=377850871]
+layout_mode = 0
 offset_left = 24.0
 offset_top = -34.0
 offset_right = 240.0
 offset_bottom = 2.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_folder_tab")
 
-[node name="TabLabel" type="Label" parent="DossierPanel/Tab"]
+[node name="TabLabel" type="Label" parent="DossierPanel/Tab" unique_id=1358225603]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -217,7 +226,8 @@ text = "CASE FILES"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Stamp" type="Label" parent="DossierPanel"]
+[node name="Stamp" type="Label" parent="DossierPanel" unique_id=2038831936]
+layout_mode = 0
 offset_left = 620.0
 offset_top = 52.0
 offset_right = 980.0
@@ -227,7 +237,8 @@ theme_override_colors/font_color = Color(0.7, 0.2, 0.2, 0.55)
 theme_override_font_sizes/font_size = 24
 text = "AFTERLIFE EXCHANGE — CLASSIFIED"
 
-[node name="PageIndicator" type="Label" parent="DossierPanel"]
+[node name="PageIndicator" type="Label" parent="DossierPanel" unique_id=1279179736]
+layout_mode = 0
 offset_left = 380.0
 offset_top = 574.0
 offset_right = 620.0
@@ -237,7 +248,7 @@ theme_override_font_sizes/font_size = 22
 text = "page 1 / 10"
 horizontal_alignment = 1
 
-[node name="Page0" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page0" type="RichTextLabel" parent="DossierPanel" unique_id=416608723 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -253,7 +264,7 @@ text = "Annabeth
 •	Dislikes: Pets and cold weather. Also, I never understood people who drink tea.
 "
 
-[node name="Page1" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page1" type="RichTextLabel" parent="DossierPanel" unique_id=816419343 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -270,7 +281,7 @@ text = "Bryan
 
 "
 
-[node name="Page2" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page2" type="RichTextLabel" parent="DossierPanel" unique_id=1113307161 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -286,7 +297,7 @@ text = "Charles
 •	Dislikes: Classical music, opera, ballet and all that. And oranges! Nasty oranges!
 "
 
-[node name="Page3" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page3" type="RichTextLabel" parent="DossierPanel" unique_id=1607637350 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -302,7 +313,7 @@ text = "Dafne
 •	Dislikes: Being dead, actually. Also, not a big reader nor a fan of sports.
 "
 
-[node name="Page4" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page4" type="RichTextLabel" parent="DossierPanel" unique_id=1235445016 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -318,7 +329,7 @@ text = "Erica
 •	Dislikes: Retirement was not kind, and I hate those feathered fiends.
 "
 
-[node name="Page5" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page5" type="RichTextLabel" parent="DossierPanel" unique_id=1076706079 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -334,7 +345,7 @@ text = "Franklyn
 •	Dislikes: Cables (obviously), sweets, sugary drinks and jazz music. Don’t ask.
 "
 
-[node name="Page6" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page6" type="RichTextLabel" parent="DossierPanel" unique_id=1562177397 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -350,7 +361,7 @@ text = "Gordon
 •	Dislikes: Cars, ghosts (but not the nice ones), and maths.
 "
 
-[node name="Page7" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page7" type="RichTextLabel" parent="DossierPanel" unique_id=1522703754 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -366,7 +377,7 @@ text = "Henri
 •	Dislikes: Nightmares, talking about my father, loud noises, and silver paraphernalia.
 "
 
-[node name="Page8" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page8" type="RichTextLabel" parent="DossierPanel" unique_id=1649093146 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -382,7 +393,7 @@ text = "Irene
 •	Dislikes: Long, pointless conversations, screaming children, loud noises.
 "
 
-[node name="Page9" type="RichTextLabel" parent="DossierPanel" groups=["dossierPages"]]
+[node name="Page9" type="RichTextLabel" parent="DossierPanel" unique_id=72850002 groups=["dossierPages"]]
 visible = false
 layout_mode = 0
 offset_left = 60.0
@@ -398,7 +409,7 @@ text = "Kevin
 •	Dislikes: I got to say, my wife, man. Long may she live.
 "
 
-[node name="ByeButton" type="Button" parent="DossierPanel"]
+[node name="ByeButton" type="Button" parent="DossierPanel" unique_id=704947123]
 layout_mode = 0
 offset_left = 40.0
 offset_top = 560.0
@@ -407,7 +418,7 @@ offset_bottom = 616.0
 theme_override_font_sizes/font_size = 26
 text = "Go Back"
 
-[node name="ForwardButton" type="Button" parent="DossierPanel"]
+[node name="ForwardButton" type="Button" parent="DossierPanel" unique_id=1919582135]
 layout_mode = 0
 offset_left = 930.0
 offset_top = 556.0
@@ -416,7 +427,7 @@ offset_bottom = 616.0
 theme_override_font_sizes/font_size = 26
 text = ">>"
 
-[node name="BackButton" type="Button" parent="DossierPanel"]
+[node name="BackButton" type="Button" parent="DossierPanel" unique_id=2060710906]
 layout_mode = 0
 offset_left = 855.0
 offset_top = 556.0
@@ -425,7 +436,7 @@ offset_bottom = 616.0
 theme_override_font_sizes/font_size = 26
 text = "<<"
 
-[node name="TaskPanel" type="Panel" parent="."]
+[node name="TaskPanel" type="Panel" parent="." unique_id=1359214322]
 visible = false
 offset_left = 140.0
 offset_top = 60.0
@@ -433,14 +444,15 @@ offset_right = 1140.0
 offset_bottom = 700.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_paper")
 
-[node name="Tab" type="Panel" parent="TaskPanel"]
+[node name="Tab" type="Panel" parent="TaskPanel" unique_id=106528602]
+layout_mode = 0
 offset_left = 24.0
 offset_top = -34.0
 offset_right = 240.0
 offset_bottom = 2.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_folder_tab")
 
-[node name="TabLabel" type="Label" parent="TaskPanel/Tab"]
+[node name="TabLabel" type="Label" parent="TaskPanel/Tab" unique_id=336023523]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -453,7 +465,7 @@ text = "TONIGHT'S ORDERS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TaskPanel"]
+[node name="RichTextLabel" type="RichTextLabel" parent="TaskPanel" unique_id=2016486904]
 layout_mode = 0
 offset_left = 60.0
 offset_top = 50.0
@@ -465,7 +477,7 @@ bbcode_enabled = true
 text = "the task text is set per night by the puzzle manager"
 custom_effects = [SubResource("Resource_garble")]
 
-[node name="ByeButton" type="Button" parent="TaskPanel"]
+[node name="ByeButton" type="Button" parent="TaskPanel" unique_id=506539226]
 layout_mode = 0
 offset_left = 40.0
 offset_top = 560.0
@@ -474,13 +486,13 @@ offset_bottom = 616.0
 theme_override_font_sizes/font_size = 26
 text = "Go Back"
 
-[node name="TransitionPanel" type="Panel" parent="."]
+[node name="TransitionPanel" type="Panel" parent="." unique_id=327457856]
 visible = false
 offset_right = 1282.0
 offset_bottom = 740.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dark")
 
-[node name="DialogueLabel" type="RichTextLabel" parent="TransitionPanel"]
+[node name="DialogueLabel" type="RichTextLabel" parent="TransitionPanel" unique_id=42690927]
 layout_mode = 0
 offset_left = 57.0
 offset_top = 69.0
@@ -488,7 +500,7 @@ offset_right = 1159.0
 offset_bottom = 638.0
 theme_override_font_sizes/normal_font_size = 36
 
-[node name="Button" type="Button" parent="TransitionPanel"]
+[node name="Button" type="Button" parent="TransitionPanel" unique_id=250935974]
 visible = false
 layout_mode = 0
 offset_left = 955.0
@@ -498,7 +510,7 @@ offset_bottom = 675.0
 theme_override_font_sizes/font_size = 32
 text = "Continue"
 
-[node name="FeedbackPanel" type="Panel" parent="."]
+[node name="FeedbackPanel" type="Panel" parent="." unique_id=1351917547]
 visible = false
 offset_left = 240.0
 offset_top = 120.0
@@ -506,7 +518,7 @@ offset_right = 1040.0
 offset_bottom = 600.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dark")
 
-[node name="FeedbackLabel" type="RichTextLabel" parent="FeedbackPanel"]
+[node name="FeedbackLabel" type="RichTextLabel" parent="FeedbackPanel" unique_id=1499655144]
 layout_mode = 0
 offset_left = 40.0
 offset_top = 36.0
@@ -514,7 +526,7 @@ offset_right = 760.0
 offset_bottom = 380.0
 theme_override_font_sizes/normal_font_size = 26
 
-[node name="FeedbackButton" type="Button" parent="FeedbackPanel"]
+[node name="FeedbackButton" type="Button" parent="FeedbackPanel" unique_id=1517244239]
 layout_mode = 0
 offset_left = 480.0
 offset_top = 400.0
@@ -523,13 +535,13 @@ offset_bottom = 452.0
 theme_override_font_sizes/font_size = 28
 text = "Back to the Board"
 
-[node name="EndingPanel" type="Panel" parent="."]
+[node name="EndingPanel" type="Panel" parent="." unique_id=441901644]
 visible = false
 offset_right = 1282.0
 offset_bottom = 740.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dark")
 
-[node name="EndingLabel" type="RichTextLabel" parent="EndingPanel"]
+[node name="EndingLabel" type="RichTextLabel" parent="EndingPanel" unique_id=1675389652]
 layout_mode = 0
 offset_left = 57.0
 offset_top = 69.0
@@ -541,7 +553,7 @@ text = "The last lamp goes dark.
 Every soul found its line tonight.
 Rest easy, operator — the dead certainly will."
 
-[node name="EndingButton" type="Button" parent="EndingPanel"]
+[node name="EndingButton" type="Button" parent="EndingPanel" unique_id=1265863026]
 layout_mode = 0
 offset_left = 955.0
 offset_top = 622.0
@@ -550,7 +562,7 @@ offset_bottom = 675.0
 theme_override_font_sizes/font_size = 32
 text = "Clock Out"
 
-[node name="OutageBanner" type="Label" parent="."]
+[node name="OutageBanner" type="Label" parent="." unique_id=722370353]
 visible = false
 anchors_preset = 5
 anchor_left = 0.5
@@ -565,9 +577,10 @@ theme_override_font_sizes/font_size = 26
 text = "POWER FAILURE — RESET THE BREAKER"
 horizontal_alignment = 1
 
-[node name="TuningMinigame" parent="." instance=ExtResource("15_tuning")]
+[node name="TuningMinigame" parent="." unique_id=857468214 instance=ExtResource("15_tuning")]
+layout_mode = 3
 
-[node name="PuzzleManager" type="Node" parent="." node_paths=PackedStringArray("room", "tr_manager", "task_label", "hud_label", "carry_label", "feedback_panel", "feedback_label", "feedback_button", "ending_panel", "screen_fx", "power_manager")]
+[node name="PuzzleManager" type="Node" parent="." unique_id=1081371039 node_paths=PackedStringArray("room", "tr_manager", "task_label", "hud_label", "carry_label", "feedback_panel", "feedback_label", "feedback_button", "ending_panel", "screen_fx", "power_manager")]
 script = ExtResource("4_jyhfs")
 room = NodePath("../Container/WorldViewport/Room")
 tr_manager = NodePath("../TransitionManager")
@@ -583,32 +596,35 @@ ending_panel = NodePath("../EndingPanel")
 screen_fx = NodePath("../ScreenFX")
 power_manager = NodePath("../PowerManager")
 
-[node name="PowerManager" type="Node" parent="." node_paths=PackedStringArray("room", "minigame", "outage_banner", "blocking_panels")]
+[node name="PowerManager" type="Node" parent="." unique_id=1086039468 node_paths=PackedStringArray("room", "minigame", "outage_banner", "blocking_panels")]
 script = ExtResource("14_power")
 room = NodePath("../Container/WorldViewport/Room")
 minigame = NodePath("../TuningMinigame")
 outage_banner = NodePath("../OutageBanner")
 blocking_panels = [NodePath("../TransitionPanel"), NodePath("../FeedbackPanel"), NodePath("../EndingPanel"), NodePath("../DossierPanel"), NodePath("../TaskPanel")]
+min_between = 5.0
+max_between = 8.0
 
-[node name="TransitionManager" type="Node" parent="." node_paths=PackedStringArray("tr_panel", "tr_label", "tr_button")]
+[node name="TransitionManager" type="Node" parent="." unique_id=690671932 node_paths=PackedStringArray("tr_panel", "tr_label", "tr_button")]
 script = ExtResource("8_trman")
 tr_panel = NodePath("../TransitionPanel")
 tr_label = NodePath("../TransitionPanel/DialogueLabel")
 tr_button = NodePath("../TransitionPanel/Button")
 
-[node name="DossierManager" type="Node" parent="." node_paths=PackedStringArray("dossier_panel", "page_indicator")]
+[node name="DossierManager" type="Node" parent="." unique_id=1553461277 node_paths=PackedStringArray("dossier_panel", "page_indicator")]
 script = ExtResource("5_tbgi4")
 dossier_panel = NodePath("../DossierPanel")
 page_indicator = NodePath("../DossierPanel/PageIndicator")
 
-[node name="TaskManager" type="Node" parent="." node_paths=PackedStringArray("panel")]
+[node name="TaskManager" type="Node" parent="." unique_id=235417022 node_paths=PackedStringArray("panel")]
 script = ExtResource("6_tefeu")
 panel = NodePath("../TaskPanel")
 
-[node name="PauseMenu" parent="." node_paths=PackedStringArray("room") instance=ExtResource("10_pause")]
+[node name="PauseMenu" parent="." unique_id=680354424 node_paths=PackedStringArray("room") instance=ExtResource("10_pause")]
 room = NodePath("../Container/WorldViewport/Room")
 
-[node name="ScreenFX" type="Control" parent="." node_paths=PackedStringArray("glitch_rect")]
+[node name="ScreenFX" type="Control" parent="." unique_id=366326863 node_paths=PackedStringArray("glitch_rect")]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -618,7 +634,7 @@ mouse_filter = 2
 script = ExtResource("11_fx")
 glitch_rect = NodePath("GlitchRect")
 
-[node name="CRTRect" type="ColorRect" parent="ScreenFX"]
+[node name="CRTRect" type="ColorRect" parent="ScreenFX" unique_id=651791016]
 material = SubResource("ShaderMaterial_crt")
 layout_mode = 1
 anchors_preset = 15
@@ -628,7 +644,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="GlitchRect" type="ColorRect" parent="ScreenFX"]
+[node name="GlitchRect" type="ColorRect" parent="ScreenFX" unique_id=1481025940]
 material = SubResource("ShaderMaterial_glitch")
 layout_mode = 1
 anchors_preset = 15

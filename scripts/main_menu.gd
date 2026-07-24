@@ -84,7 +84,7 @@ func _ready() -> void:
 
 #the home screen fades in piece by piece on boot
 func _play_intro() -> void:
-	var intro_nodes: Array[Control] = [%TitleLabel, %Tagline]
+	var intro_nodes: Array[Control] = [%Tagline]
 	for child: Node in %Buttons.get_children():
 		if child is Control:
 			intro_nodes.append(child)
