@@ -13,6 +13,20 @@ fog_enabled = true
 fog_light_color = Color(0.08, 0.12, 0.2, 1)
 fog_density = 0.02
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 0.9, 0.7, 0.16)
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_dust"]
+material = SubResource("StandardMaterial3D_dust")
+size = Vector2(0.05, 0.05)
+
 [sub_resource type="StandardMaterial3D" id="mat_asphalt"]
 albedo_color = Color(0.06, 0.06, 0.09, 1)
 
@@ -196,17 +210,6 @@ size = Vector3(0.5, 4, 26)
 [sub_resource type="BoxShape3D" id="BoxShape3D_boundfront"]
 size = Vector3(21, 4, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(1, 0.9, 0.7, 0.16)
-billboard_mode = 3
-billboard_keep_scale = true
-
-[sub_resource type="QuadMesh" id="QuadMesh_dust"]
-material = SubResource("StandardMaterial3D_dust")
-size = Vector2(0.05, 0.05)
-
 [node name="MenuWorld" type="Node3D" unique_id=1712133015]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=146355490]
@@ -223,11 +226,25 @@ light_color = Color(1, 0.82, 0.6, 1)
 light_energy = 2.0
 omni_range = 7.0
 
-[node name="SignGlow" type="OmniLight3D" parent="." unique_id=1108692355]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -2.3)
+[node name="Sign" type="Node3D" parent="." unique_id=1743820517]
+
+[node name="SignGlow" type="OmniLight3D" parent="Sign" unique_id=1108692355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9289002, 7.320881, -2.3)
 light_color = Color(0.4, 0.95, 0.9, 1)
 light_energy = 1.8
 omni_range = 6.0
+
+[node name="NeonSign" type="Label3D" parent="Sign" unique_id=1703972135 node_paths=PackedStringArray("glow_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9289002, 7.5208807, -2.78)
+layers = 2
+pixel_size = 0.02
+modulate = Color(0.5, 1, 0.92, 1)
+outline_modulate = Color(0.03, 0.18, 0.16, 1)
+text = "HOLD, PLEASE!"
+font_size = 48
+outline_size = 16
+script = ExtResource("1_flicker")
+glow_light = NodePath("../SignGlow")
 
 [node name="LampGlow" type="OmniLight3D" parent="." unique_id=2094420080]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.75, 3.9, 2.5)
@@ -235,7 +252,7 @@ light_color = Color(1, 0.85, 0.62, 1)
 light_energy = 2.5
 omni_range = 8.0
 
-[node name="DustMotes" type="CPUParticles3D" parent="."]
+[node name="DustMotes" type="CPUParticles3D" parent="." unique_id=1457195541]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.75, 2.6, 2.5)
 amount = 24
 lifetime = 6.0
@@ -312,18 +329,6 @@ modulate = Color(1, 0.85, 0.6, 1)
 text = "NIGHT SHIFT"
 font_size = 48
 
-[node name="NeonSign" type="Label3D" parent="." unique_id=1703972135 node_paths=PackedStringArray("glow_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, -2.78)
-layers = 2
-pixel_size = 0.02
-modulate = Color(0.5, 1, 0.92, 1)
-outline_modulate = Color(0.03, 0.18, 0.16, 1)
-text = "HOLD, PLEASE"
-font_size = 48
-outline_size = 16
-script = ExtResource("1_flicker")
-glow_light = NodePath("../SignGlow")
-
 [node name="Node3D" type="Node3D" parent="." unique_id=1203380474]
 
 [node name="LampPole" type="MeshInstance3D" parent="Node3D" unique_id=1856752549]
@@ -397,7 +402,7 @@ transform = Transform3D(0.99987996, 0.015495251, 0, -0.015495251, 0.99987996, 0,
 mesh = SubResource("BoxMesh_wire")
 
 [node name="PhoneBooth" type="Node3D" parent="." unique_id=1242088391]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0, -0.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.676196, 0, -0.9)
 
 [node name="Frame" type="MeshInstance3D" parent="PhoneBooth" unique_id=1445608691]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
@@ -597,48 +602,48 @@ font_size = 36
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.90794)
 
-[node name="StreetColliders" type="StaticBody3D" parent="."]
+[node name="StreetColliders" type="StaticBody3D" parent="." unique_id=1500848220]
 
-[node name="Ground" type="CollisionShape3D" parent="StreetColliders"]
+[node name="Ground" type="CollisionShape3D" parent="StreetColliders" unique_id=1729199511]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 6)
 shape = SubResource("BoxShape3D_ground")
 
-[node name="Sidewalk" type="CollisionShape3D" parent="StreetColliders"]
+[node name="Sidewalk" type="CollisionShape3D" parent="StreetColliders" unique_id=1209149269]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -1.3)
 shape = SubResource("BoxShape3D_sidewalk")
 
-[node name="SidewalkRamp" type="CollisionShape3D" parent="StreetColliders"]
+[node name="SidewalkRamp" type="CollisionShape3D" parent="StreetColliders" unique_id=862319565]
 transform = Transform3D(1, 0, 0, 0, 0.9767, -0.2147, 0, 0.2147, 0.9767, 0, 0.01, 0.58)
 shape = SubResource("BoxShape3D_ramp")
 
-[node name="FacadeWall" type="CollisionShape3D" parent="StreetColliders"]
+[node name="FacadeWall" type="CollisionShape3D" parent="StreetColliders" unique_id=622315121]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, -3.2)
 shape = SubResource("BoxShape3D_facadewall")
 
-[node name="FoundationWall" type="CollisionShape3D" parent="StreetColliders"]
+[node name="FoundationWall" type="CollisionShape3D" parent="StreetColliders" unique_id=1988473860]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -2.8)
 shape = SubResource("BoxShape3D_foundation")
 
-[node name="Booth" type="CollisionShape3D" parent="StreetColliders"]
+[node name="Booth" type="CollisionShape3D" parent="StreetColliders" unique_id=1994020365]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 1.3, -0.9)
 shape = SubResource("BoxShape3D_booth")
 
-[node name="LampPole" type="CollisionShape3D" parent="StreetColliders"]
+[node name="LampPole" type="CollisionShape3D" parent="StreetColliders" unique_id=235398743]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 2.1, 1.5251863)
 shape = SubResource("BoxShape3D_pole")
 
-[node name="PhonePole" type="CollisionShape3D" parent="StreetColliders"]
+[node name="PhonePole" type="CollisionShape3D" parent="StreetColliders" unique_id=290824686]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 2.1, 1.5)
 shape = SubResource("BoxShape3D_pole")
 
-[node name="BoundLeft" type="CollisionShape3D" parent="StreetColliders"]
+[node name="BoundLeft" type="CollisionShape3D" parent="StreetColliders" unique_id=2029573133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.9, 2, 4)
 shape = SubResource("BoxShape3D_boundside")
 
-[node name="BoundRight" type="CollisionShape3D" parent="StreetColliders"]
+[node name="BoundRight" type="CollisionShape3D" parent="StreetColliders" unique_id=1697549266]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.9, 2, 4)
 shape = SubResource("BoxShape3D_boundside")
 
-[node name="BoundFront" type="CollisionShape3D" parent="StreetColliders"]
+[node name="BoundFront" type="CollisionShape3D" parent="StreetColliders" unique_id=1928660410]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 10.5)
 shape = SubResource("BoxShape3D_boundfront")
